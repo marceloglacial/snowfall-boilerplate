@@ -1,0 +1,36 @@
+{
+  "name": "iceberg-boilerplate",
+  "version": "1.0.1",
+  "description": "* Created by Marcelo Glacial * Starts on 05/2017",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "gulp-zip": "latest",
+    "autoprefixer": "latest",
+    "browser-sync": "latest",
+    "cssnano": "latest",
+    "del": "latest",
+    "gulp": "^4.0.0",
+    "gulp-concat": "latest",
+    "gulp-decompress": "latest",
+    "gulp-download": "latest",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-imagemin": "latest",
+    "gulp-postcss": "latest",
+    "gulp-sass": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-uglify": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/glacial/iceberg-boilerplate.git"
+  },
+  "author": "Marcelo Glacial Freitas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/glacial/iceberg-boilerplate/issues"
+  },
+  "homepage": "https://gitlab.com/glacial/iceberg-boilerplate#readme"
+}
