@@ -31,3 +31,7 @@ End-to-end WordPress project based on three stages:
 - Folders structures
 - Create readme
 - Initial commit
+
+## Tested on
+
+<a href="https://www.browserstack.com/"><img src="misc/Browserstack-logo@2x.png" width="200" alt="Browserstack Logo"></a>
