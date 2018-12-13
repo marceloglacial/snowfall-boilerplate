@@ -32,4 +32,6 @@ End-to-end WordPress project based on three stages:
 - Create readme
 - Initial commit
 
-[![Browserstack Logo](misc/Browserstack-logo@2x.png)](https://www.browserstack.com/)
+###
+
+<a href="https://www.browserstack.com/"><img src="misc/Browserstack-logo@2x.png" width="100" alt="Browserstack Logo"></a>
