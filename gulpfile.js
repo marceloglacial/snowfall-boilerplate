@@ -16,6 +16,16 @@ const zip = require('gulp-zip');
 
 // Paths
 const paths = {
+    frontend: {
+        root: './front-end/',
+        all: './front-end/**/*.*',
+        src: './front-end/src/',
+        dist: './front-end/dist/',
+        css: './front-end/src/assets/css/',
+        sass: './front-end/src/assets/sass/**.*',
+        js: './front-end/src/assets/js/**.js',
+        images: './front-end/src/assets/img/**.*'
+    },
     wordpress: {
         url: 'https://wordpress.org',
         version: 'latest.zip',
@@ -24,32 +34,98 @@ const paths = {
         server: 'server',
         tmp: 'tmp'
     },
-    project: {
-        all: './src/**/*.*',
-        src: './src/',
-        dist: './dist/',
-        deploy: './deploy/'
-    },
-    styles: {
-        src: './src/assets/css/src/*.*',
-        dest: './src/assets/css/',
-    },
-    scripts: {
-        src: './src/assets/js/src/*.js',
-        dest: './src/assets/js/',
-    },
-    images: {
-        src: './src/assets/img/*.*',
-        dest: './dist/assets/img/',
-    }
 };
 
+// ===================================================
+// Front-end
+// ===================================================
+
+// Minify CSS with SASS
+function styles() {
+    return (
+        gulp
+            .src(paths.frontend.sass)
+            .pipe(sourcemaps.init())
+            .pipe(sass())
+            .on('error', sass.logError)
+            .pipe(postcss([autoprefixer(), cssnano()]))
+            .pipe(sourcemaps.write('./maps'))
+            .pipe(gulp.dest(paths.frontend.css))
+    );
+}
+exports.styles = styles
+
+// Minify JavaScript
+function scripts() {
+    return (
+        gulp
+            .src(paths.frontend.js, {
+                sourcemaps: true
+            })
+            .pipe(uglify())
+            // .pipe(concat('main.min.js'))
+            .pipe(gulp.dest(paths.frontend.dist + '/assets/js/'))
+    );
+}
+exports.scripts = scripts
+
+// Minify Images
+function images() {
+    return (
+        gulp
+            .src(paths.frontend.src + '/**/*.*')
+            .pipe(imagemin())
+            .pipe(gulp.dest(paths.frontend.dist))
+    )
+};
+exports.images = images
+
+// Minify HTML 
+function html() {
+    return (
+        gulp
+            .src(paths.frontend.src + '/**/*.html')
+            .pipe(htmlmin({ collapseWhitespace: true, removeComments: true, minifyCSS: true, minifyJS: true }))
+            .pipe(gulp.dest(paths.frontend.dist))
+    )
+}
+exports.html = html
+
+// Live Server
+function frontendServer() {
+    browserSync.init({
+        server: {
+            baseDir: paths.frontend.src
+        }
+    });
+    frontendWatch();
+}
+exports.frontendServer = frontendServer
+
+// Watch
+function frontendWatch() {
+    gulp.watch(paths.frontend.sass, styles)
+    gulp.watch(paths.frontend.all).on('change', browserSync.reload);
+}
+exports.frontendWatch = frontendWatch
+
+// Build and Deploy
+const frontendDeploy = gulp.series(() => del(paths.frontend.dist), styles, images, scripts, html)
+
+// Commands
+gulp.task('frontend-deploy', frontendDeploy)
+gulp.task('frontend-start', frontendServer)
+
+
+// ===================================================
+// Back-end
+// ===================================================
 
 // Download Wordpress
 function wpDownload() {
     return (
         download(paths.wordpress.url + '/' + paths.wordpress.version)
-        .pipe(gulp.dest(paths.wordpress.tmp))
+            .pipe(gulp.dest(paths.wordpress.tmp))
     )
 }
 exports.wpDownload = wpDownload
@@ -87,58 +163,6 @@ exports.wpClean = wpClean
 const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, () => del(paths.wordpress.tmp), start)
 gulp.task('install', install)
 
-// Minify CSS with SASS
-function styles() {
-    return (
-        gulp
-            .src(paths.styles.src)
-            .pipe(sourcemaps.init())
-            .pipe(sass())
-            .on('error', sass.logError)
-            .pipe(postcss([autoprefixer(), cssnano()]))
-            .pipe(sourcemaps.write())
-            .pipe(gulp.dest(paths.styles.dest))
-    );
-}
-exports.styles = styles
-
-// Minify JavaScript
-function scripts() {
-    return (
-        gulp
-            .src(paths.scripts.src, {
-                sourcemaps: true
-            })
-            .pipe(uglify())
-            .pipe(concat('main.min.js'))
-            .pipe(gulp.dest(paths.scripts.dest))
-    );
-}
-exports.scripts = scripts
-
-// Minify Images
-function images() {
-    return (
-        gulp
-            .src(paths.images.src)
-            .pipe(imagemin())
-            .pipe(gulp.dest(paths.images.dest))
-    ) 
-};
-exports.images = images
-
-// Minify HTML 
-function html() {
-    return (
-        gulp
-            .src(paths.project.src + '/**/*.php')
-            .pipe(htmlmin({ collapseWhitespace: true, removeComments: true, minifyCSS: true, minifyJS: true }))
-            .pipe(gulp.dest(paths.project.dist))
-    )
-}
-exports.html = html
-
-
 // BrowserSync with new file
 function live() {
     return (
@@ -150,14 +174,6 @@ function live() {
 }
 exports.live = live
 
-
-// Watch Files
-function watch() {
-    gulp.watch(paths.styles.src, styles)
-    gulp.watch(paths.scripts.src, scripts)
-    gulp.watch(paths.project.all, live)
-}
-exports.watch = watch
 
 // Start server
 function start() {
@@ -194,6 +210,20 @@ exports.zipfiles = zipfiles
 
 const deploy = gulp.series(() => del(paths.project.dist), build, zipfiles)
 gulp.task('deploy', deploy)
+
+
+// ===================================================
+// Global
+// ===================================================
+
+// Watch Files
+function watch() {
+    gulp.watch(paths.frontend.sass, styles)
+    gulp.watch(paths.frontend.all, live)
+}
+exports.watch = watch
+
+
 
 
 // !!!! DANGER !!!! 
