@@ -27,7 +27,7 @@ End-to-end WordPress project based on three stages:
 
 ### 0.0.1
 
-- Import Snowflake and Iceberd boilerplates files
+- Import Snowflake and Iceberg boilerplates files
 - Folders structures
 - Create readme
 - Initial commit
