@@ -1,6 +1,6 @@
 {
-  "name": "iceberg-boilerplate",
-  "version": "1.0.1",
+  "name": "snowfall-boilerplate",
+  "version": "0.0.3",
   "description": "* Created by Marcelo Glacial * Starts on 05/2017",
   "main": "gulpfile.js",
   "directories": {
@@ -8,29 +8,26 @@
   },
   "dependencies": {
     "gulp-zip": "latest",
-    "autoprefixer": "latest",
     "browser-sync": "latest",
-    "cssnano": "latest",
     "del": "latest",
     "gulp": "^4.0.0",
-    "gulp-concat": "latest",
+    "gulp-autoprefixer": "latest",
     "gulp-decompress": "latest",
     "gulp-download": "latest",
-    "gulp-htmlmin": "^5.0.1",
+    "gulp-htmlmin": "latest",
     "gulp-imagemin": "latest",
-    "gulp-postcss": "latest",
     "gulp-sass": "latest",
     "gulp-sourcemaps": "latest",
     "gulp-uglify": "latest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/glacial/iceberg-boilerplate.git"
+    "url": "git+https://github.com/marceloglacial/snowfall-boilerplate.git"
   },
   "author": "Marcelo Glacial Freitas",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/glacial/iceberg-boilerplate/issues"
+    "url": "https://github.com/marceloglacial/snowfall-boilerplate/issues"
   },
-  "homepage": "https://gitlab.com/glacial/iceberg-boilerplate#readme"
+  "homepage": "https://github.com/marceloglacial/snowfall-boilerplate#readme"
 }
