@@ -4,11 +4,8 @@ const download = require('gulp-download');
 const decompress = require('gulp-decompress');
 const browserSync = require('browser-sync').create();
 const sass = require('gulp-sass');
-const postcss = require('gulp-postcss');
-const autoprefixer = require('autoprefixer');
-const cssnano = require('cssnano');
+const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
-const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 const imagemin = require('gulp-imagemin');
 const htmlmin = require('gulp-htmlmin');
@@ -46,9 +43,11 @@ function styles() {
         gulp
             .src(paths.frontend.sass)
             .pipe(sourcemaps.init())
-            .pipe(sass())
+            .pipe(sass({outputStyle: 'compressed'}))
             .on('error', sass.logError)
-            .pipe(postcss([autoprefixer(), cssnano()]))
+            .pipe(autoprefixer({
+                browsers: ['last 2 versions'],
+            }))
             .pipe(sourcemaps.write('./maps'))
             .pipe(gulp.dest(paths.frontend.css))
     );
