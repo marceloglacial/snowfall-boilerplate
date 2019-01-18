@@ -10,6 +10,7 @@ const uglify = require('gulp-uglify');
 const imagemin = require('gulp-imagemin');
 const htmlmin = require('gulp-htmlmin');
 const zip = require('gulp-zip');
+const rename = require('gulp-rename');
 
 // Paths
 const frontend = new function() {
@@ -115,6 +116,7 @@ const frontendDeploy = gulp.series(() => del(frontend.dist), styles, images, scr
 
 // Commands
 gulp.task('frontend-deploy', frontendDeploy)
+gulp.task('frontend-build', frontendDeploy)
 gulp.task('frontend-start', frontendServer)
 
 //
