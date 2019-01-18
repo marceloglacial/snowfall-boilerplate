@@ -12,26 +12,28 @@ const htmlmin = require('gulp-htmlmin');
 const zip = require('gulp-zip');
 
 // Paths
-const paths = {
-    frontend: {
-        root: './front-end/',
-        all: './front-end/**/*.*',
-        src: './front-end/src/',
-        dist: './front-end/dist/',
-        css: './front-end/src/assets/css/',
-        sass: './front-end/src/assets/sass/**.*',
-        js: './front-end/src/assets/js/**.js',
-        images: './front-end/src/assets/img/**.*'
-    },
-    wordpress: {
-        url: 'https://wordpress.org',
-        version: 'latest.zip',
-        themeName: 'iceberg-boilerplate',
-        proxy: 'http://localhost:8888',
-        server: 'server',
-        tmp: 'tmp'
-    },
-};
+const frontend = new function() {
+    this.root = './front-end';
+    this.all = this.root + '/**/*.*';
+    this.src = this.root + '/src/';
+    this.dist = this.root + '/dist/';
+    this.css = this.root + this.src + '/assets/css/';
+    this.sass = this.root + this.src + '/assets/sass/**/*.*';
+    this.js = this.root + this.src + '/assets/js/**/*.js';
+    this.images = this.root + this.src + '/assets/img/**/*.*';
+}
+const backend = new function() {
+    this.url = 'https://wordpress.org';
+    this.version = 'latest.zip';
+    this.proxy = 'http://localhost:8888';
+    this.root = './back-end';
+    this.src = this.root + '/src/';
+    this.dist = this.root + '/dist/';
+    this.server = this.root + '/server/';
+    this.tmp = this.root + '/tmp/';
+    this.themeName = 'snowfall-boilerplate';
+    this.themeFolder = this.server + '/wp-content/themes/' + this.themeName;
+}
 
 // ===================================================
 // Front-end
@@ -41,15 +43,15 @@ const paths = {
 function styles() {
     return (
         gulp
-            .src(paths.frontend.sass)
+            .src(frontend.sass)
             .pipe(sourcemaps.init())
-            .pipe(sass({outputStyle: 'compressed'}))
+            .pipe(sass({ outputStyle: 'compressed' }))
             .on('error', sass.logError)
             .pipe(autoprefixer({
                 browsers: ['last 2 versions'],
             }))
             .pipe(sourcemaps.write('./maps'))
-            .pipe(gulp.dest(paths.frontend.css))
+            .pipe(gulp.dest(frontend.css))
     );
 }
 exports.styles = styles
@@ -58,12 +60,12 @@ exports.styles = styles
 function scripts() {
     return (
         gulp
-            .src(paths.frontend.js, {
+            .src(frontend.js, {
                 sourcemaps: true
             })
             .pipe(uglify())
             // .pipe(concat('main.min.js'))
-            .pipe(gulp.dest(paths.frontend.dist + '/assets/js/'))
+            .pipe(gulp.dest(frontend.dist + '/assets/js/'))
     );
 }
 exports.scripts = scripts
@@ -72,9 +74,9 @@ exports.scripts = scripts
 function images() {
     return (
         gulp
-            .src(paths.frontend.src + '/**/*.*')
+            .src(frontend.src + '/**/*.*')
             .pipe(imagemin())
-            .pipe(gulp.dest(paths.frontend.dist))
+            .pipe(gulp.dest(frontend.dist))
     )
 };
 exports.images = images
@@ -83,9 +85,9 @@ exports.images = images
 function html() {
     return (
         gulp
-            .src(paths.frontend.src + '/**/*.html')
+            .src(frontend.src + '/**/*.html')
             .pipe(htmlmin({ collapseWhitespace: true, removeComments: true, minifyCSS: true, minifyJS: true }))
-            .pipe(gulp.dest(paths.frontend.dist))
+            .pipe(gulp.dest(frontend.dist))
     )
 }
 exports.html = html
@@ -94,7 +96,7 @@ exports.html = html
 function frontendServer() {
     browserSync.init({
         server: {
-            baseDir: paths.frontend.src
+            baseDir: frontend.src
         }
     });
     frontendWatch();
@@ -103,28 +105,33 @@ exports.frontendServer = frontendServer
 
 // Watch
 function frontendWatch() {
-    gulp.watch(paths.frontend.sass, styles)
-    gulp.watch(paths.frontend.all).on('change', browserSync.reload);
+    gulp.watch(frontend.sass, styles)
+    gulp.watch(frontend.all).on('change', browserSync.reload);
 }
 exports.frontendWatch = frontendWatch
 
 // Build and Deploy
-const frontendDeploy = gulp.series(() => del(paths.frontend.dist), styles, images, scripts, html)
+const frontendDeploy = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
 
 // Commands
 gulp.task('frontend-deploy', frontendDeploy)
 gulp.task('frontend-start', frontendServer)
 
-
+//
 // ===================================================
 // Back-end
 // ===================================================
+//
+// Fisrt steps:
+// * Start PHP and MySQL servers 
+// * Create a WordPress database
+//
 
 // Download Wordpress
 function wpDownload() {
     return (
-        download(paths.wordpress.url + '/' + paths.wordpress.version)
-            .pipe(gulp.dest(paths.wordpress.tmp))
+        download(backend.url + '/' + backend.version)
+        .pipe(gulp.dest(backend.tmp))
     )
 }
 exports.wpDownload = wpDownload
@@ -133,9 +140,9 @@ exports.wpDownload = wpDownload
 function wpUnzip() {
     return (
         gulp
-            .src(paths.wordpress.tmp + '/*.{tar,tar.bz2,tar.gz,zip}')
+            .src(backend.tmp + '/*.{tar,tar.bz2,tar.gz,zip}')
             .pipe(decompress({ strip: 1 }))
-            .pipe(gulp.dest(paths.wordpress.server))
+            .pipe(gulp.dest(backend.server))
     )
 }
 exports.wpUnzip = wpUnzip
@@ -144,8 +151,10 @@ exports.wpUnzip = wpUnzip
 function wpCopy() {
     return (
         gulp
-            .src(paths.project.all)
-            .pipe(gulp.dest(paths.wordpress.server + '/wp-content/themes/' + paths.wordpress.themeName))
+            .src(frontend.src + '/**/*.*')
+            .pipe(gulp.dest(backend.src))
+            .pipe(gulp.src(backend.src))
+            .pipe(gulp.dest(backend.themeFolder))
     )
 }
 exports.wpCopy = wpCopy
@@ -153,80 +162,62 @@ exports.wpCopy = wpCopy
 // Delete WordPress files
 function wpClean() {
     return (
-        del([paths.wordpress.tmp, paths.wordpress.server])
+        del([backend.tmp, backend.server])
     )
 }
 exports.wpClean = wpClean
 
-// Install project
-const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, () => del(paths.wordpress.tmp), start)
-gulp.task('install', install)
-
 // BrowserSync with new file
-function live() {
+function wpLive() {
     return (
         gulp
-            .src(paths.project.all)
-            .pipe(gulp.dest(paths.wordpress.server + '/wp-content/themes/' + paths.wordpress.themeName))
+            .src(backend.src)
+            .pipe(gulp.dest(backend.server + '/wp-content/themes/' + backend.themeName))
             .pipe(browserSync.stream())
     )
 }
-exports.live = live
-
+exports.wpLive = wpLive
 
 // Start server
-function start() {
+function wpStart() {
     browserSync.init({
-        proxy: paths.wordpress.proxy + '/' + paths.wordpress.themeName + '/' + paths.wordpress.server
+        proxy: backend.proxy + '/' + backend.themeName + '/' + backend.server
     });
-    watch()
+    wpWatch()
 }
-exports.start = start
+exports.wpStart = wpStart
 
-// Build 
-function copy() {
-    return (
-        gulp
-            .src(paths.project.all)
-            .pipe(gulp.dest(paths.project.dist))
-    )
+// Watch
+function wpWatch() {
+    gulp.watch(backend.src).on('change', wpLive);
 }
-exports.copy = copy
+exports.wpWatch = wpWatch
 
-const build = gulp.series(() => del(paths.project.dist), styles, scripts, copy, images, html)
-gulp.task('build', build)
 
 // Deploy
 function zipfiles() {
     return (
         gulp
             .src(paths.project.dist + '/**/*')
-            .pipe(zip(paths.wordpress.themeName + '.zip'))
+            .pipe(zip(backend.themeName + '.zip'))
             .pipe(gulp.dest(paths.project.deploy))
     )
 }
 exports.zipfiles = zipfiles
 
-const deploy = gulp.series(() => del(paths.project.dist), build, zipfiles)
-gulp.task('deploy', deploy)
+// Commands 
+const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, () => del(backend.tmp))
+// const build = gulp.series(() => del(paths.project.dist), styles, scripts, copy, images, html)
+// const deploy = gulp.series(() => del(paths.project.dist), build, zipfiles)
+
+gulp.task('backend-install', install)
+gulp.task('backend-start', wpStart)
+// gulp.task('backend-build', build)
+// gulp.task('backend-deploy', deploy)
 
 
-// ===================================================
-// Global
-// ===================================================
-
-// Watch Files
-function watch() {
-    gulp.watch(paths.frontend.sass, styles)
-    gulp.watch(paths.frontend.all, live)
-}
-exports.watch = watch
-
-
-
-
-// !!!! DANGER !!!! 
+// !!!! DANGER - RESET PROJECT !!!! 
 // =======================================
-const reset = gulp.series(wpClean, () => del(['node_modules', paths.project.deploy, paths.project.dist, paths.wordpress.tmp, paths.wordpress.server]))
+const reset = gulp.series(wpClean, () => del(['node_modules',]))
 gulp.task('reset', reset)
 // =======================================
