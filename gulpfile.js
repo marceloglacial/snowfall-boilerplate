@@ -218,8 +218,34 @@ gulp.task('backend-start', wpStart)
 // gulp.task('backend-deploy', deploy)
 
 
-// !!!! DANGER - RESET PROJECT !!!! 
-// =======================================
-const reset = gulp.series(wpClean, () => del(['node_modules',]))
-gulp.task('reset', reset)
-// =======================================
+// FTP deploy
+// Please rename credentials-sample.json to credentials.json 
+const gutil = require('gulp-util');
+const ftp = require('vinyl-ftp');
+const config = require('./credentials.json');
+
+gulp.task('deploy', function () {
+
+    var conn = ftp.create({
+        host: config.ftp.host,
+        port: config.ftp.port,
+        user: config.ftp.user,
+        password: config.ftp.password,
+        parallel: 1,
+        log: gutil.log
+    });
+
+    var globs = [
+        paths.frontend.dist + '/**/*.*'
+    ];
+
+    // using base = '.' will transfer everything to /public_html correctly
+    // turn off buffering in gulp.src for best performance
+
+    return gulp.src(globs, {
+            base: '.',
+            buffer: false
+        })
+        .pipe(conn.newer(config.ftp.remoteFolder)) // only upload newer files
+        .pipe(conn.dest(config.ftp.remoteFolder));
+});

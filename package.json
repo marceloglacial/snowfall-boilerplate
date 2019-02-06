@@ -19,7 +19,9 @@
     "gulp-sass": "latest",
     "gulp-sourcemaps": "latest",
     "gulp-uglify": "latest",
-    "gulp-rename": "latest"
+    "gulp-rename": "latest",
+    "gulp-util": "latest",
+    "vinyl-ftp": "latest"
   },
   "repository": {
     "type": "git",
