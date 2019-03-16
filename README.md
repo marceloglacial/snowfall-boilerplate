@@ -19,19 +19,13 @@ End-to-end WordPress project based on three stages:
 
 ```terminal
     npm install 
-    npm audit fix --force
-    gulp install
 ```
 
 ## Release notes
 
 ### 0.0.1
 
-- Import Snowflake and Iceberg boilerplates files
+- Import <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake</a> and <a href="https://github.com/marceloglacial/iceberg-boilerplate">Iceberg boilerplate</a>'s files
 - Folders structures
 - Create readme
 - Initial commit
-
-## Tested on
-
-<a href="https://www.browserstack.com/"><img src="misc/Browserstack-logo@2x.png" width="200" alt="Browserstack Logo"></a>
