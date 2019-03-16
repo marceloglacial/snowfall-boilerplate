@@ -22,7 +22,7 @@ const frontend = new function() {
     this.sass = this.root + this.src + '/assets/sass/**/*.*';
     this.js = this.root + this.src + '/assets/js/**/*.js';
     this.images = this.root + this.src + '/assets/img/**/*.*';
-}
+};
 const backend = new function() {
     this.url = 'https://wordpress.org';
     this.version = 'latest.zip';
@@ -34,7 +34,7 @@ const backend = new function() {
     this.tmp = this.root + '/tmp/';
     this.themeName = 'snowfall-boilerplate';
     this.themeFolder = this.server + '/wp-content/themes/' + this.themeName;
-}
+};
 
 // ===================================================
 // Front-end
@@ -54,7 +54,7 @@ function styles() {
             .pipe(sourcemaps.write('./maps'))
             .pipe(gulp.dest(frontend.css))
     );
-}
+};
 exports.styles = styles
 
 // Minify JavaScript
@@ -68,7 +68,7 @@ function scripts() {
             // .pipe(concat('main.min.js'))
             .pipe(gulp.dest(frontend.dist + '/assets/js/'))
     );
-}
+};
 exports.scripts = scripts
 
 // Minify Images
@@ -90,7 +90,7 @@ function html() {
             .pipe(htmlmin({ collapseWhitespace: true, removeComments: true, minifyCSS: true, minifyJS: true }))
             .pipe(gulp.dest(frontend.dist))
     )
-}
+};
 exports.html = html
 
 // Live Server
@@ -101,23 +101,23 @@ function frontendServer() {
         }
     });
     frontendWatch();
-}
+};
 exports.frontendServer = frontendServer
 
 // Watch
 function frontendWatch() {
     gulp.watch(frontend.sass, styles)
     gulp.watch(frontend.all).on('change', browserSync.reload);
-}
+};
 exports.frontendWatch = frontendWatch
 
 // Build and Deploy
 const frontendDeploy = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
 
 // Commands
-gulp.task('frontend-deploy', frontendDeploy)
-gulp.task('frontend-build', frontendDeploy)
-gulp.task('frontend-start', frontendServer)
+gulp.task('frontend:deploy', frontendDeploy)
+gulp.task('frontend:build', frontendDeploy)
+gulp.task('frontend:start', frontendServer)
 
 //
 // ===================================================
@@ -135,7 +135,7 @@ function wpDownload() {
         download(backend.url + '/' + backend.version)
         .pipe(gulp.dest(backend.tmp))
     )
-}
+};
 exports.wpDownload = wpDownload
 
 // Decompress Wordpress and add to server folder
@@ -146,7 +146,7 @@ function wpUnzip() {
             .pipe(decompress({ strip: 1 }))
             .pipe(gulp.dest(backend.server))
     )
-}
+};
 exports.wpUnzip = wpUnzip
 
 // Copy file from work folder to server folder
@@ -158,7 +158,7 @@ function wpCopy() {
             .pipe(gulp.src(backend.src))
             .pipe(gulp.dest(backend.themeFolder))
     )
-}
+};
 exports.wpCopy = wpCopy
 
 // Delete WordPress files
@@ -166,7 +166,7 @@ function wpClean() {
     return (
         del([backend.tmp, backend.server])
     )
-}
+};
 exports.wpClean = wpClean
 
 // BrowserSync with new file
@@ -177,7 +177,7 @@ function wpLive() {
             .pipe(gulp.dest(backend.server + '/wp-content/themes/' + backend.themeName))
             .pipe(browserSync.stream())
     )
-}
+};
 exports.wpLive = wpLive
 
 // Start server
@@ -186,13 +186,13 @@ function wpStart() {
         proxy: backend.proxy + '/' + backend.themeName + '/' + backend.server
     });
     wpWatch()
-}
+};
 exports.wpStart = wpStart
 
 // Watch
 function wpWatch() {
     gulp.watch(backend.src).on('change', wpLive);
-}
+};
 exports.wpWatch = wpWatch
 
 
@@ -204,7 +204,7 @@ function zipfiles() {
             .pipe(zip(backend.themeName + '.zip'))
             .pipe(gulp.dest(paths.project.deploy))
     )
-}
+};
 exports.zipfiles = zipfiles
 
 // Commands 
