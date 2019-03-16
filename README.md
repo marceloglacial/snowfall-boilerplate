@@ -1,25 +1,25 @@
 # Snowfall Boilerplate
 
-End-to-end WordPress project based on three stages:
+End-to-end web project based on three stages:
 1. Design (<a href="https://www.sketchapp.com/">Sketch</a>)
 2. Front-end (HTML5/CSS/JS/SASS)
 3. Back-end (<a href="https://wordpress.org/">WordPress</a>)
 
 ## Features
 
-### Design
+### Design (/design/)
 - Sketch template file with:
  - Desktop, tablet and phone artboards
  - Default web icons, tiles and favicons 
  - WordPress screenshot artboards
 
-### Front-end
+### Front-end (/front-end/)
 - HTML5 starter template files
 - <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a> ready
 - <a href="https://sass-lang.com/">SASS</a> ready
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
-### Back-end
+### Back-end (/back-end/)
 - WordPress latest version download and unzip to workspace
 - PHP server proxy ready 
 - Theme Starter template boilerplate
@@ -29,7 +29,7 @@ End-to-end WordPress project based on three stages:
 - HTML minify on build
 - JS minify on build
 - Optmized Images on build
-- <a href="https://www.browsersync.io/">Browser Live Reloading</a>
+- <a href="https://www.browsersync.io/">BrowserSync Live Reloading</a>
 
 
 ## Installation
@@ -49,6 +49,13 @@ End-to-end WordPress project based on three stages:
 
 ## Front-end
 
+- `frontend:start` - Starts Browser Live reloading and wath SASS files.
+- `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
+
+## Back-end
+
+- `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
+- `backend:start` -  Starts Browser Live reloading and wath SASS files.
 
 ## Release notes
 

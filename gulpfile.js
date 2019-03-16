@@ -115,7 +115,6 @@ exports.frontendWatch = frontendWatch
 const frontendDeploy = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
 
 // Commands
-gulp.task('frontend:deploy', frontendDeploy)
 gulp.task('frontend:build', frontendDeploy)
 gulp.task('frontend:start', frontendServer)
 
@@ -209,43 +208,6 @@ exports.zipfiles = zipfiles
 
 // Commands 
 const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, () => del(backend.tmp))
-// const build = gulp.series(() => del(paths.project.dist), styles, scripts, copy, images, html)
-// const deploy = gulp.series(() => del(paths.project.dist), build, zipfiles)
 
-gulp.task('backend-install', install)
-gulp.task('backend-start', wpStart)
-// gulp.task('backend-build', build)
-// gulp.task('backend-deploy', deploy)
-
-
-// FTP deploy
-// Please rename credentials-sample.json to credentials.json 
-const gutil = require('gulp-util');
-const ftp = require('vinyl-ftp');
-const config = require('./credentials.json');
-
-gulp.task('deploy', function () {
-
-    var conn = ftp.create({
-        host: config.ftp.host,
-        port: config.ftp.port,
-        user: config.ftp.user,
-        password: config.ftp.password,
-        parallel: 1,
-        log: gutil.log
-    });
-
-    var globs = [
-        paths.frontend.dist + '/**/*.*'
-    ];
-
-    // using base = '.' will transfer everything to /public_html correctly
-    // turn off buffering in gulp.src for best performance
-
-    return gulp.src(globs, {
-            base: '.',
-            buffer: false
-        })
-        .pipe(conn.newer(config.ftp.remoteFolder)) // only upload newer files
-        .pipe(conn.dest(config.ftp.remoteFolder));
-});
+gulp.task('backend:install', install)
+gulp.task('backend:start', wpStart)
