@@ -8,7 +8,8 @@ End-to-end web project based on three stages:
 ## Features
 
 ### Design
-- Sketch template file with:
+
+Sketch template file with:
  - Desktop, tablet and phone artboards
  - Default web icons, tiles and favicons 
  - WordPress screenshot artboards
@@ -49,7 +50,7 @@ End-to-end web project based on three stages:
 
 ## Front-end
 
-- `frontend:start` - Starts Browser Live reloading and wath SASS files.
+- `frontend:start` - Starts Browser Live reloading and watch SASS files.
 - `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
 
 ## Back-end
