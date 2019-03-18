@@ -1,36 +1,27 @@
 {
   "name": "snowfall-boilerplate",
-  "version": "0.0.3",
-  "description": "* Created by Marcelo Glacial * Starts on 05/2017",
-  "main": "gulpfile.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "dependencies": {
-    "gulp-zip": "latest",
-    "browser-sync": "latest",
-    "del": "latest",
-    "gulp": "^4.0.0",
-    "gulp-autoprefixer": "latest",
-    "gulp-decompress": "latest",
-    "gulp-download": "latest",
-    "gulp-htmlmin": "latest",
-    "gulp-imagemin": "latest",
-    "gulp-sass": "latest",
-    "gulp-sourcemaps": "latest",
-    "gulp-uglify": "latest",
-    "gulp-rename": "latest",
-    "gulp-util": "latest",
-    "vinyl-ftp": "latest"
-  },
+  "version": "0.0.7",
+  "description": "End-to-end web project based on three stages:  Design, Front-end and Back-end",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/marceloglacial/snowfall-boilerplate.git"
   },
   "author": "Marcelo Glacial Freitas",
-  "license": "ISC",
+  "license": "OSL",
   "bugs": {
     "url": "https://github.com/marceloglacial/snowfall-boilerplate/issues"
   },
-  "homepage": "https://github.com/marceloglacial/snowfall-boilerplate#readme"
+  "homepage": "https://github.com/marceloglacial/snowfall-boilerplate#readme",
+  "devDependencies": {
+    "browser-sync": "^2.26.3",
+    "del": "^4.0.0",
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-decompress": "^2.0.2",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-imagemin": "^5.0.3",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2"
+  }
 }
