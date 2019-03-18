@@ -9,6 +9,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const imagemin = require('gulp-imagemin');
 const htmlmin = require('gulp-htmlmin');
+const rename = require('gulp-rename');
 
 // Paths
 const frontend = new function () {
@@ -167,6 +168,20 @@ function wpCopy() {
 };
 exports.wpCopy = wpCopy
 
+// Rename index file
+function wpRename() {
+    return (
+        gulp
+        .src(frontend.src + '/index.html')
+        .pipe(rename(backend.src + '/index.php'))
+        .pipe(gulp.dest(backend.src))
+        .pipe(gulp.src(backend.src))
+        .pipe(gulp.dest(backend.themeFolder))
+    )
+};
+exports.wpRename = wpRename
+
+
 // Delete WordPress files
 function wpClean() {
     return (
@@ -202,7 +217,7 @@ function wpWatch() {
 exports.wpWatch = wpWatch
 
 // Commands 
-const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, () => del(backend.tmp))
+const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, wpRename, () => del(backend.tmp))
 
 gulp.task('backend:install', install)
 gulp.task('backend:start', wpStart)
