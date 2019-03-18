@@ -7,19 +7,20 @@ End-to-end web project based on three stages:
 
 ## Features
 
-### Design (/design/)
-- Sketch template file with:
+### Design
+
+Sketch template file with:
  - Desktop, tablet and phone artboards
  - Default web icons, tiles and favicons 
  - WordPress screenshot artboards
 
-### Front-end (/front-end/)
+### Front-end
 - HTML5 starter template files
 - <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a> ready
 - <a href="https://sass-lang.com/">SASS</a> ready
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
-### Back-end (/back-end/)
+### Back-end
 - WordPress latest version download and unzip to workspace
 - PHP server proxy ready 
 - Theme Starter template boilerplate
@@ -49,7 +50,7 @@ End-to-end web project based on three stages:
 
 ## Front-end
 
-- `frontend:start` - Starts Browser Live reloading and wath SASS files.
+- `frontend:start` - Starts Browser Live reloading and watch SASS files.
 - `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
 
 ## Back-end
@@ -57,11 +58,7 @@ End-to-end web project based on three stages:
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
 - `backend:start` -  Starts Browser Live reloading and wath SASS files.
 
-## Release notes
+# References
+- Front-end based on <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake Boilerplate</a> 
+- Back-end based on <a href="https://github.com/marceloglacial/iceberg-boilerplate">Iceberg boilerplate</a>
 
-### 0.0.1
-
-- Import <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake</a> and <a href="https://github.com/marceloglacial/iceberg-boilerplate">Iceberg boilerplate</a>'s files
-- Folders structures
-- Create readme
-- Initial commit
