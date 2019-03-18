@@ -13,17 +13,17 @@ const zip = require('gulp-zip');
 const rename = require('gulp-rename');
 
 // Paths
-const frontend = new function() {
+const frontend = new function () {
     this.root = './front-end';
     this.all = this.root + '/**/*.*';
     this.src = this.root + '/src/';
     this.dist = this.root + '/dist/';
-    this.css = this.root + this.src + '/assets/css/';
-    this.sass = this.root + this.src + '/assets/sass/**/*.*';
-    this.js = this.root + this.src + '/assets/js/**/*.js';
-    this.images = this.root + this.src + '/assets/img/**/*.*';
+    this.css = this.src + '/assets/css/';
+    this.sass = this.src + '/assets/sass/**/*.*';
+    this.js = this.src + '/assets/js/**/*.js';
+    this.images = this.src + '/assets/img/**/*.*';
 };
-const backend = new function() {
+const backend = new function () {
     this.url = 'https://wordpress.org';
     this.version = 'latest.zip';
     this.proxy = 'http://localhost:8888';
@@ -44,15 +44,17 @@ const backend = new function() {
 function styles() {
     return (
         gulp
-            .src(frontend.sass)
-            .pipe(sourcemaps.init())
-            .pipe(sass({ outputStyle: 'compressed' }))
-            .on('error', sass.logError)
-            .pipe(autoprefixer({
-                browsers: ['last 2 versions'],
-            }))
-            .pipe(sourcemaps.write('./maps'))
-            .pipe(gulp.dest(frontend.css))
+        .src(frontend.sass)
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            outputStyle: 'compressed'
+        }))
+        .on('error', sass.logError)
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+        }))
+        .pipe(sourcemaps.write('./maps'))
+        .pipe(gulp.dest(frontend.css))
     );
 };
 exports.styles = styles
@@ -61,12 +63,12 @@ exports.styles = styles
 function scripts() {
     return (
         gulp
-            .src(frontend.js, {
-                sourcemaps: true
-            })
-            .pipe(uglify())
-            // .pipe(concat('main.min.js'))
-            .pipe(gulp.dest(frontend.dist + '/assets/js/'))
+        .src(frontend.js, {
+            sourcemaps: true
+        })
+        .pipe(uglify())
+        // .pipe(concat('main.min.js'))
+        .pipe(gulp.dest(frontend.dist + '/assets/js/'))
     );
 };
 exports.scripts = scripts
@@ -75,9 +77,9 @@ exports.scripts = scripts
 function images() {
     return (
         gulp
-            .src(frontend.src + '/**/*.*')
-            .pipe(imagemin())
-            .pipe(gulp.dest(frontend.dist))
+        .src(frontend.src + '/**/*.*')
+        .pipe(imagemin())
+        .pipe(gulp.dest(frontend.dist))
     )
 };
 exports.images = images
@@ -86,9 +88,14 @@ exports.images = images
 function html() {
     return (
         gulp
-            .src(frontend.src + '/**/*.html')
-            .pipe(htmlmin({ collapseWhitespace: true, removeComments: true, minifyCSS: true, minifyJS: true }))
-            .pipe(gulp.dest(frontend.dist))
+        .src(frontend.src + '/**/*.html')
+        .pipe(htmlmin({
+            collapseWhitespace: true,
+            removeComments: true,
+            minifyCSS: true,
+            minifyJS: true
+        }))
+        .pipe(gulp.dest(frontend.dist))
     )
 };
 exports.html = html
@@ -141,9 +148,11 @@ exports.wpDownload = wpDownload
 function wpUnzip() {
     return (
         gulp
-            .src(backend.tmp + '/*.{tar,tar.bz2,tar.gz,zip}')
-            .pipe(decompress({ strip: 1 }))
-            .pipe(gulp.dest(backend.server))
+        .src(backend.tmp + '/*.{tar,tar.bz2,tar.gz,zip}')
+        .pipe(decompress({
+            strip: 1
+        }))
+        .pipe(gulp.dest(backend.server))
     )
 };
 exports.wpUnzip = wpUnzip
@@ -152,10 +161,10 @@ exports.wpUnzip = wpUnzip
 function wpCopy() {
     return (
         gulp
-            .src(frontend.src + '/**/*.*')
-            .pipe(gulp.dest(backend.src))
-            .pipe(gulp.src(backend.src))
-            .pipe(gulp.dest(backend.themeFolder))
+        .src(frontend.src + '/**/*.*')
+        .pipe(gulp.dest(backend.src))
+        .pipe(gulp.src(backend.src))
+        .pipe(gulp.dest(backend.themeFolder))
     )
 };
 exports.wpCopy = wpCopy
@@ -172,9 +181,9 @@ exports.wpClean = wpClean
 function wpLive() {
     return (
         gulp
-            .src(backend.src)
-            .pipe(gulp.dest(backend.server + '/wp-content/themes/' + backend.themeName))
-            .pipe(browserSync.stream())
+        .src(backend.src)
+        .pipe(gulp.dest(backend.server + '/wp-content/themes/' + backend.themeName))
+        .pipe(browserSync.stream())
     )
 };
 exports.wpLive = wpLive
@@ -199,9 +208,9 @@ exports.wpWatch = wpWatch
 function zipfiles() {
     return (
         gulp
-            .src(paths.project.dist + '/**/*')
-            .pipe(zip(backend.themeName + '.zip'))
-            .pipe(gulp.dest(paths.project.deploy))
+        .src(paths.project.dist + '/**/*')
+        .pipe(zip(backend.themeName + '.zip'))
+        .pipe(gulp.dest(paths.project.deploy))
     )
 };
 exports.zipfiles = zipfiles
