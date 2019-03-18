@@ -203,18 +203,6 @@ function wpWatch() {
 };
 exports.wpWatch = wpWatch
 
-
-// Deploy
-function zipfiles() {
-    return (
-        gulp
-        .src(paths.project.dist + '/**/*')
-        .pipe(zip(backend.themeName + '.zip'))
-        .pipe(gulp.dest(paths.project.deploy))
-    )
-};
-exports.zipfiles = zipfiles
-
 // Commands 
 const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, () => del(backend.tmp))
 
