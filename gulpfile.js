@@ -9,8 +9,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const imagemin = require('gulp-imagemin');
 const htmlmin = require('gulp-htmlmin');
-const zip = require('gulp-zip');
-const rename = require('gulp-rename');
 
 // Paths
 const frontend = new function () {
