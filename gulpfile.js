@@ -195,7 +195,7 @@ function backendCopyToWork() {
     return (
         gulp
         .src(backend.tmp + '/**/*.*')
-        .pipe(multiDest([backend.src, backend.server]))
+        .pipe(multiDest([backend.src, backend.themeFolder]))
     )
 }
 exports.backendCopyToWork = backendCopyToWork
@@ -241,6 +241,6 @@ function wpWatch() {
 exports.wpWatch = wpWatch
 
 // 2.8 - Back-end commands 
-const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy)
+const install = gulp.series(wpClean, wpDownload, wpUnzip, () => del(backend.tmp), wpCopy)
 gulp.task('backend:install', install)
 gulp.task('backend:start', wpStart)
