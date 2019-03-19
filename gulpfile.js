@@ -15,26 +15,26 @@ const gulp = require('gulp'),
 
 // Paths
 const frontend = new function () {
-    this.root = './front-end';
-    this.all = this.root + '/**/*.*';
-    this.src = this.root + '/src/';
-    this.dist = this.root + '/dist/';
-    this.css = this.src + '/assets/css/';
-    this.sass = this.src + '/assets/sass/**/*.*';
-    this.js = this.src + '/assets/js/**/*.js';
-    this.images = this.src + '/assets/img/**/*.*';
+    this.root = './front-end/';
+    this.all = this.root + '**/*.*';
+    this.src = this.root + 'src/';
+    this.dist = this.root + 'dist/';
+    this.css = this.src + 'assets/css/';
+    this.sass = this.src + 'assets/sass/**/*.scss';
+    this.js = this.src + 'assets/js/**/*.js';
+    this.images = this.src + 'assets/img/**/*.*';
 };
 const backend = new function () {
     this.url = 'https://wordpress.org';
     this.version = 'latest.zip';
     this.proxy = 'http://localhost:8888';
-    this.root = './back-end';
-    this.src = this.root + '/src/';
-    this.dist = this.root + '/dist/';
-    this.server = this.root + '/server/';
-    this.tmp = this.root + '/tmp/';
+    this.root = './back-end/';
+    this.src = this.root + 'src/';
+    this.dist = this.root + 'dist/';
+    this.server = this.root + 'server/';
+    this.tmp = this.root + 'tmp/';
     this.themeName = 'snowfall-boilerplate';
-    this.themeFolder = this.server + '/wp-content/themes/' + this.themeName;
+    this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
 };
 
 // ===================================================
@@ -56,6 +56,7 @@ function styles() {
         }))
         .pipe(sourcemaps.write('./maps'))
         .pipe(gulp.dest(frontend.css))
+        .pipe(browserSync.stream())
     );
 };
 exports.styles = styles
@@ -68,7 +69,6 @@ function scripts() {
             sourcemaps: true
         })
         .pipe(uglify())
-        // .pipe(concat('main.min.js'))
         .pipe(gulp.dest(frontend.dist + '/assets/js/'))
     );
 };
@@ -102,29 +102,25 @@ function html() {
 exports.html = html
 
 // 1.5 - Live Server
-function frontendServer() {
+function frontendReload() {
+    browserSync.reload();
+}
+function frontendWatch() {
     browserSync.init({
         server: {
             baseDir: frontend.src
         }
     });
-    frontendWatch();
-};
-exports.frontendServer = frontendServer
-
-// 1.6 - Watch
-function frontendWatch() {
-    gulp.watch(frontend.sass, styles)
-    gulp.watch(frontend.all).on('change', browserSync.reload);
-};
-exports.frontendWatch = frontendWatch
+    gulp.watch(frontend.sass).on('change', styles);
+    gulp.watch(frontend.src + '**/*.*').on('change', frontendReload);
+}
 
 // 1.7 - Build and Deploy
 const frontendDeploy = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
 
 // 1.8 - Commands
 gulp.task('frontend:build', frontendDeploy)
-gulp.task('frontend:start', frontendServer)
+gulp.task('frontend:start', frontendWatch)
 
 //
 // ===================================================
