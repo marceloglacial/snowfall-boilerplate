@@ -174,7 +174,7 @@ function backRename() {
         .pipe(ext_replace('.php'))
         .pipe(gulp.dest(backend.tmp))
         .pipe(gulp.src(backend.tmp + '/**/*.*'))
-        .pipe(gulp.dest(backend.src))
+        .pipe(gulp.dest([backend.src, backend.themeFolder]))
     )
 }
 exports.backRename = backRename
