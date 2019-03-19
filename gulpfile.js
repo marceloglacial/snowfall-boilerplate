@@ -20,7 +20,7 @@ const frontend = new function () {
     this.src = this.root + '/src/';
     this.dist = this.root + '/dist/';
     this.css = this.src + '/assets/css/';
-    this.sass = this.src + '/assets/sass/**/*.*';
+    this.sass = this.src + '/assets/sass/**/*.scss';
     this.js = this.src + '/assets/js/**/*.js';
     this.images = this.src + '/assets/img/**/*.*';
 };
