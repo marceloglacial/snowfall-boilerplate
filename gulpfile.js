@@ -1,16 +1,17 @@
-const gulp = require('gulp');
-const del = require('del');
-const download = require('gulp-download');
-const decompress = require('gulp-decompress');
-const browserSync = require('browser-sync').create();
-const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const sourcemaps = require('gulp-sourcemaps');
-const uglify = require('gulp-uglify');
-const imagemin = require('gulp-imagemin');
-const htmlmin = require('gulp-htmlmin');
-const ext_replace = require('gulp-ext-replace');
-const clean = require('gulp-clean');
+const gulp = require('gulp'),
+    del = require('del'),
+    download = require('gulp-download'),
+    decompress = require('gulp-decompress'),
+    browserSync = require('browser-sync').create(),
+    sass = require('gulp-sass'),
+    autoprefixer = require('gulp-autoprefixer'),
+    sourcemaps = require('gulp-sourcemaps'),
+    uglify = require('gulp-uglify'),
+    imagemin = require('gulp-imagemin'),
+    htmlmin = require('gulp-htmlmin'),
+    ext_replace = require('gulp-ext-replace'),
+    clean = require('gulp-clean'),
+    multiDest = require('gulp-multi-dest');
 
 // Paths
 const frontend = new function () {
@@ -37,10 +38,10 @@ const backend = new function () {
 };
 
 // ===================================================
-// Front-end
+// 1. Front-end
 // ===================================================
 
-// Minify CSS with SASS
+// 1.1 - Minify CSS with SASS
 function styles() {
     return (
         gulp
@@ -59,7 +60,7 @@ function styles() {
 };
 exports.styles = styles
 
-// Minify JavaScript
+// 1.2 - Minify JavaScript
 function scripts() {
     return (
         gulp
@@ -73,7 +74,7 @@ function scripts() {
 };
 exports.scripts = scripts
 
-// Minify Images
+// 1.3 - Minify Images
 function images() {
     return (
         gulp
@@ -84,7 +85,7 @@ function images() {
 };
 exports.images = images
 
-// Minify HTML 
+// 1.4 - Minify HTML 
 function html() {
     return (
         gulp
@@ -100,7 +101,7 @@ function html() {
 };
 exports.html = html
 
-// Live Server
+// 1.5 - Live Server
 function frontendServer() {
     browserSync.init({
         server: {
@@ -111,23 +112,23 @@ function frontendServer() {
 };
 exports.frontendServer = frontendServer
 
-// Watch
+// 1.6 - Watch
 function frontendWatch() {
     gulp.watch(frontend.sass, styles)
     gulp.watch(frontend.all).on('change', browserSync.reload);
 };
 exports.frontendWatch = frontendWatch
 
-// Build and Deploy
+// 1.7 - Build and Deploy
 const frontendDeploy = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
 
-// Commands
+// 1.8 - Commands
 gulp.task('frontend:build', frontendDeploy)
 gulp.task('frontend:start', frontendServer)
 
 //
 // ===================================================
-// Back-end
+// 2. Back-end
 // ===================================================
 //
 // Fisrt steps:
@@ -135,7 +136,7 @@ gulp.task('frontend:start', frontendServer)
 // * Create a WordPress database
 //
 
-// Download Wordpress
+// 2.1 - Download Wordpress
 function wpDownload() {
     return (
         download(backend.url + '/' + backend.version)
@@ -144,7 +145,7 @@ function wpDownload() {
 };
 exports.wpDownload = wpDownload
 
-// Decompress Wordpress and add to server folder
+// 2.2 - Decompress Wordpress and add to server folder
 function wpUnzip() {
     return (
         gulp
@@ -157,42 +158,55 @@ function wpUnzip() {
 };
 exports.wpUnzip = wpUnzip
 
-// Copy to workfolder
-function backCopy() {
+// 2.3 - Copy files from Front-end to Back-end workfolder and server folder
+// 2.3.1 -  Copy files 
+function backendCopyToTemp() {
     return (
         gulp
         .src(frontend.src + '/**/*.*')
         .pipe(gulp.dest(backend.tmp))
     )
 }
-exports.backCopy = backCopy
+exports.backendCopyToTemp = backendCopyToTemp
 
-function backRename() {
+// 2.3.2 - Rename index files to php
+function backendRename() {
     return (
         gulp
         .src(backend.tmp + '/**/*.html')
         .pipe(ext_replace('.php'))
         .pipe(gulp.dest(backend.tmp))
-        .pipe(gulp.src(backend.tmp + '/**/*.*'))
-        .pipe(gulp.dest([backend.src, backend.themeFolder]))
     )
 }
-exports.backRename = backRename
+exports.backendRename = backendRename
 
-function backClean() {
+// 2.3.3 -  Delete html files 
+function backendClean() {
     return (
         gulp
         .src(backend.tmp + '/**/*.html')
         .pipe(clean())
     )
 }
-exports.backClean = backClean
+exports.backendClean = backendClean
 
-const wpCopy = gulp.series([backCopy, backRename, backClean, () => del(backend.tmp)]);
+// 2.3.4 -  Copy files to workfolder and server
+function backendCopyToWork() {
+    return (
+        gulp
+        .src(backend.tmp + '/**/*.*')
+        .pipe(multiDest([backend.src, backend.server]))
+    )
+}
+exports.backendCopyToWork = backendCopyToWork
+
+
+// 2.3.5 - Run all tasks in series 
+const wpCopy = gulp.series([backendCopyToTemp, backendRename, backendClean, backendCopyToWork, () => del(backend.tmp)]);
 gulp.task('wpCopy', wpCopy)
 
 
-// Delete WordPress files
+// 2.4 - Delete WordPress files
 function wpClean() {
     return (
         del([backend.tmp, backend.server])
@@ -200,7 +214,7 @@ function wpClean() {
 };
 exports.wpClean = wpClean
 
-// BrowserSync with new file
+// 2.5 - BrowserSync with new file
 function wpLive() {
     return (
         gulp
@@ -211,7 +225,7 @@ function wpLive() {
 };
 exports.wpLive = wpLive
 
-// Start server
+// 2.6 - Start server
 function wpStart() {
     browserSync.init({
         proxy: backend.proxy + '/' + backend.themeName + '/' + backend.server
@@ -220,14 +234,13 @@ function wpStart() {
 };
 exports.wpStart = wpStart
 
-// Watch
+// 2.7 - Watch
 function wpWatch() {
     gulp.watch(backend.src).on('change', wpLive);
 };
 exports.wpWatch = wpWatch
 
-// Commands 
-const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, () => del(backend.tmp))
-
+// 2.8 - Back-end commands 
+const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy)
 gulp.task('backend:install', install)
 gulp.task('backend:start', wpStart)
