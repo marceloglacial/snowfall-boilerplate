@@ -33,6 +33,7 @@ package-lock.json
 # Mac thumbnails
 \.DS_Store
 
-# FTP Credentials
-
+# Project Files/Folders
+back-end/server
+back-end/tmp
 credentials.json
