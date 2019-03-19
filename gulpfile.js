@@ -9,7 +9,8 @@ const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const imagemin = require('gulp-imagemin');
 const htmlmin = require('gulp-htmlmin');
-const rename = require('gulp-rename');
+const ext_replace = require('gulp-ext-replace');
+const clean = require('gulp-clean');
 
 // Paths
 const frontend = new function () {
@@ -156,30 +157,39 @@ function wpUnzip() {
 };
 exports.wpUnzip = wpUnzip
 
-// Copy file from work folder to server folder
-function wpCopy() {
+// Copy to workfolder
+function backCopy() {
     return (
         gulp
         .src(frontend.src + '/**/*.*')
-        .pipe(gulp.dest(backend.src))
-        .pipe(gulp.src(backend.src))
-        .pipe(gulp.dest(backend.themeFolder))
+        .pipe(gulp.dest(backend.tmp))
     )
-};
-exports.wpCopy = wpCopy
+}
+exports.backCopy = backCopy
 
-// Rename index file
-function wpRename() {
+function backRename() {
     return (
         gulp
-        .src(frontend.src + '/index.html')
-        .pipe(rename(backend.src + '/index.php'))
+        .src(backend.tmp + '/**/*.html')
+        .pipe(ext_replace('.php'))
+        .pipe(gulp.dest(backend.tmp))
+        .pipe(gulp.src(backend.tmp + '/**/*.*'))
         .pipe(gulp.dest(backend.src))
-        .pipe(gulp.src(backend.src))
-        .pipe(gulp.dest(backend.themeFolder))
     )
-};
-exports.wpRename = wpRename
+}
+exports.backRename = backRename
+
+function backClean() {
+    return (
+        gulp
+        .src(backend.tmp + '/**/*.html')
+        .pipe(clean())
+    )
+}
+exports.backClean = backClean
+
+const wpCopy = gulp.series([backCopy, backRename, backClean, () => del(backend.tmp)]);
+gulp.task('wpCopy', wpCopy)
 
 
 // Delete WordPress files
@@ -217,7 +227,7 @@ function wpWatch() {
 exports.wpWatch = wpWatch
 
 // Commands 
-const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, wpRename, () => del(backend.tmp))
+const install = gulp.series(wpClean, wpDownload, wpUnzip, wpCopy, () => del(backend.tmp))
 
 gulp.task('backend:install', install)
 gulp.task('backend:start', wpStart)
