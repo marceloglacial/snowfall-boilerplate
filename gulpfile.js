@@ -214,12 +214,12 @@ function wpClean() {
 };
 exports.wpClean = wpClean
 
-// 2.5 - BrowserSync with new file
+// 2.5 - BrowserSync 
 function wpLive() {
     return (
         gulp
-        .src(backend.src)
-        .pipe(gulp.dest(backend.server + '/wp-content/themes/' + backend.themeName))
+        .src(backend.src + '**/*.*')
+        .pipe(gulp.dest(backend.themeFolder))
         .pipe(browserSync.stream())
     )
 };
