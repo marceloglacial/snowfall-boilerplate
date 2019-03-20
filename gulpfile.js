@@ -29,7 +29,7 @@ const backend = new function () {
     this.dist = this.root + 'dist/';
     this.server = this.root + 'server/';
     this.tmp = this.root + 'tmp/';
-    this.themeName = 'snowfall-boilerplate';
+    this.themeName = gulpPackages.name;
     this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
 };
 
