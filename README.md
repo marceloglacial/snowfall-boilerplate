@@ -18,6 +18,7 @@ Sketch template file with:
 - HTML5 starter template files
 - <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a> ready
 - <a href="https://sass-lang.com/">SASS</a> ready
+- <a href="https://sass-guidelin.es/#architecture">SASS Architecture</a> ready
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
 ### Back-end
@@ -63,7 +64,7 @@ Sketch template file with:
 
 # Deploy
 
-FTP Deploy integrated with Gulp task
+FTP Deploy integrated via cli using Gulp
 
 ### FTP Instructions
 
