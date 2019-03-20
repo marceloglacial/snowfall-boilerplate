@@ -297,3 +297,18 @@ gulp.task('backend:deploy', gulp.series('backend:build', function (cb) {
     ftpDeploy(backend.dist)
     cb();
 }));
+
+// Load data from package.json
+gulp.task('test', function (cb) {
+    const test = require('./package.json');
+    console.log(test.name);
+    console.log(test.version); 
+    let dep = Object.keys(test.devDependencies);
+    for (const key in dep) {
+        if (dep.hasOwnProperty(key)) {
+            const element = dep[key];
+            console.log(element + ' = require("' + element + '");' )   
+        }
+    }
+    cb();
+});
