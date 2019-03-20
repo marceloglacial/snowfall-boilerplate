@@ -33,7 +33,7 @@ Sketch template file with:
 - Optmized Images on build
 - <a href="https://www.browsersync.io/">BrowserSync Live Reloading</a>
 
-## CI/CD
+### CI/CD
 - <a href="#deploy">FTP Deploy</a> integrated
 
 
@@ -50,21 +50,23 @@ Sketch template file with:
     npm install 
 ```
 
-# Usage 
+# How to User (gulp tasks) 
 
 ## Front-end
 
 - `frontend:start` - Starts Browser Live reloading and watch SASS files.
 - `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
+- `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server (default).
 
 ## Back-end
 
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
 - `backend:start` -  Starts Browser Live reloading and wath SASS files.
+- `backend:deploy` -  Build theme and upload all `back-end/server` files to FTP server (default).
 
-## FTP Deploy
+# Deploy
 
-Instructions:
+Configure FTP deploy:
 
 1. Fill FTP credentials and serrver info on `credentials-sample.json` 
 2. Rename `credentials-sample.json` to `credentials.json`
@@ -72,10 +74,6 @@ Instructions:
 <strong>NOTE:</strong>
 Due sensitive information, `credentials-sample.json` WILL NOT BE on version control.
 
-### Usage
-
-- `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server (default).
-- `backend:deploy` -  Build theme and upload all `back-end/server` files to FTP server (default).
 
 # References
 - Front-end based on <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake Boilerplate</a> 
