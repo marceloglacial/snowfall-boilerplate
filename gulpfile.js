@@ -238,10 +238,19 @@ function wpWatch() {
 };
 exports.wpWatch = wpWatch
 
-// 2.8 - Back-end commands 
+// 2.8 - Build
+function wpBuild() {
+    gulp
+        .src(backend.src + '**/*.*')
+        .pipe(gulp.dest(backend.dist))
+};
+exports.wpBuild = wpBuild
+
+// 2.9 - Back-end commands 
 const wpInstall = gulp.series(wpClean, wpDownload, wpUnzip, () => del(backend.tmp), wpCopy)
-gulp.task('backend:install', wpInstall) // install wordpress and copy src to theme folder
-gulp.task('backend:start', wpStart) // starts live server
+gulp.task('backend:install', wpInstall)
+gulp.task('backend:start', wpStart)
+gulp.task('backend:build', wpBuild)
 
 
 
@@ -284,7 +293,7 @@ gulp.task('frontend:deploy', gulp.series('frontend:build', function (cb) {
     ftpDeploy(frontend.dist)
     cb();
 }));
-gulp.task('backend:deploy', function (cb) {
-    ftpDeploy(backend.dist);
+gulp.task('backend:deploy', gulp.series('backend:build', function (cb) {
+    ftpDeploy(backend.dist)
     cb();
-});
+}));
