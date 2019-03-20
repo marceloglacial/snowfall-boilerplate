@@ -50,7 +50,7 @@ Sketch template file with:
     npm install 
 ```
 
-# How to User (gulp tasks) 
+# How to Use (gulp tasks) 
 
 ## Front-end
 
