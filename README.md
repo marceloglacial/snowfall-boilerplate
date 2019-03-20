@@ -62,11 +62,9 @@ Sketch template file with:
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
 - `backend:start` -  Starts Browser Live reloading and wath SASS files.
 
-# Deploy
+## FTP Deploy
 
-FTP Deploy integrated via cli using Gulp
-
-### FTP Instructions
+Instructions:
 
 1. Fill FTP credentials and serrver info on `credentials-sample.json` 
 2. Rename `credentials-sample.json` to `credentials.json`
