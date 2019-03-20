@@ -32,6 +32,9 @@ Sketch template file with:
 - Optmized Images on build
 - <a href="https://www.browsersync.io/">BrowserSync Live Reloading</a>
 
+## CI/CD
+- <a href="#deploy">FTP Deploy</a> integrated
+
 
 ## Installation
 
@@ -57,6 +60,19 @@ Sketch template file with:
 
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
 - `backend:start` -  Starts Browser Live reloading and wath SASS files.
+
+# Deploy
+
+FTP Deploy integrated with Gulp task
+
+## FTP Instructions
+
+1. Fill ftp info `credentials-sample.json` 
+2. Rename `credentials-sample.json` to `credentials-sample.json`
+
+<strong>NOTE:</strong>
+Due sensitive information, `credentials-sample.json` WILL NOT BE on version control.
+
 
 # References
 - Front-end based on <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake Boilerplate</a> 
