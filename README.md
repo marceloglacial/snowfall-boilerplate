@@ -62,7 +62,7 @@ Sketch template file with:
 
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
 - `backend:start` -  Starts Browser Live reloading and wath SASS files.
-- `backend:deploy` -  Build theme and upload all `back-end/server` files to FTP server (default).
+- `backend:deploy` -  Build theme and upload all `back-end/src` files to FTP server (default).
 
 # Deploy
 
