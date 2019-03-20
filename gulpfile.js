@@ -11,7 +11,9 @@ const gulp = require('gulp'),
     htmlmin = require('gulp-htmlmin'),
     ext_replace = require('gulp-ext-replace'),
     clean = require('gulp-clean'),
-    multiDest = require('gulp-multi-dest');
+    multiDest = require('gulp-multi-dest'),
+    gutil = require('gulp-util'),
+    ftp = require('vinyl-ftp');
 
 // Paths
 const frontend = new function () {
@@ -105,6 +107,7 @@ exports.html = html
 function frontendReload() {
     browserSync.reload();
 }
+
 function frontendWatch() {
     browserSync.init({
         server: {
@@ -115,10 +118,10 @@ function frontendWatch() {
     gulp.watch(frontend.src + '**/*.*').on('change', frontendReload);
 }
 
-// 1.7 - Build and Deploy
+// 1.6 - Build and Deploy
 const frontendDeploy = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
 
-// 1.8 - Commands
+// 1.7 - Commands
 gulp.task('frontend:build', frontendDeploy)
 gulp.task('frontend:start', frontendWatch)
 
@@ -240,3 +243,48 @@ exports.wpWatch = wpWatch
 const install = gulp.series(wpClean, wpDownload, wpUnzip, () => del(backend.tmp), wpCopy)
 gulp.task('backend:install', install)
 gulp.task('backend:start', wpStart)
+
+
+//
+// ===================================================
+// 3. Global Taks
+// ===================================================
+//
+
+// 3.1 - FTP Deploy
+// Please fill info and rename credentials-sample.json
+// to credentials.json
+//
+// NOTE: 
+// Due sensitive information,
+// this file WILL NOT BE on version control.
+//
+
+function ftpDeploy(param) {
+    let credentials = require('./credentials.json');
+    var conn = ftp.create({
+        host: credentials.host,
+        user: credentials.user,
+        password: credentials.password,
+        parallel: credentials.parallel,
+        log: credentials.log
+    });
+    console.log('Uploading files ...');
+    var globs = [
+        param + '**/*.*',
+    ];
+
+    return gulp.src(globs, {
+            buffer: false
+        })
+        .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
+        .pipe(conn.dest(credentials.remoteFolder));
+}
+gulp.task('frontend:deploy', function (cb) {
+    ftpDeploy(frontend.dist);
+    cb();
+});
+gulp.task('backend:deploy', function (cb) {
+    ftpDeploy(backend.src);
+    cb();
+});
