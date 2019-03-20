@@ -65,14 +65,18 @@ Sketch template file with:
 
 FTP Deploy integrated with Gulp task
 
-## FTP Instructions
+### FTP Instructions
 
-1. Fill ftp info `credentials-sample.json` 
-2. Rename `credentials-sample.json` to `credentials-sample.json`
+1. Fill FTP credentials and serrver info on `credentials-sample.json` 
+2. Rename `credentials-sample.json` to `credentials.json`
 
 <strong>NOTE:</strong>
 Due sensitive information, `credentials-sample.json` WILL NOT BE on version control.
 
+### Usage
+
+- `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server (default).
+- `backend:deploy` -  Build theme and upload all `back-end/server` files to FTP server (default).
 
 # References
 - Front-end based on <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake Boilerplate</a> 

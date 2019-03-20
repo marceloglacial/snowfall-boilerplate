@@ -12,7 +12,6 @@ const gulp = require('gulp'),
     ext_replace = require('gulp-ext-replace'),
     clean = require('gulp-clean'),
     multiDest = require('gulp-multi-dest'),
-    gutil = require('gulp-util'),
     ftp = require('vinyl-ftp');
 
 // Paths
@@ -118,11 +117,11 @@ function frontendWatch() {
     gulp.watch(frontend.src + '**/*.*').on('change', frontendReload);
 }
 
-// 1.6 - Build and Deploy
-const frontendDeploy = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
+// 1.6 - Build
+const frontendBuild = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
 
 // 1.7 - Commands
-gulp.task('frontend:build', frontendDeploy)
+gulp.task('frontend:build', frontendBuild)
 gulp.task('frontend:start', frontendWatch)
 
 //
@@ -240,9 +239,10 @@ function wpWatch() {
 exports.wpWatch = wpWatch
 
 // 2.8 - Back-end commands 
-const install = gulp.series(wpClean, wpDownload, wpUnzip, () => del(backend.tmp), wpCopy)
-gulp.task('backend:install', install)
-gulp.task('backend:start', wpStart)
+const wpInstall = gulp.series(wpClean, wpDownload, wpUnzip, () => del(backend.tmp), wpCopy)
+gulp.task('backend:install', wpInstall) // install wordpress and copy src to theme folder
+gulp.task('backend:start', wpStart) // starts live server
+
 
 
 //
@@ -269,22 +269,22 @@ function ftpDeploy(param) {
         parallel: credentials.parallel,
         log: credentials.log
     });
-    console.log('Uploading files ...');
-    var globs = [
+    console.log('Uploading ' + param + ' files ...');
+    let globs = [
         param + '**/*.*',
     ];
-
-    return gulp.src(globs, {
-            buffer: false
-        })
+    var options = {
+        buffer: false
+    }
+    return gulp.src(globs, options)
         .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
         .pipe(conn.dest(credentials.remoteFolder));
 }
-gulp.task('frontend:deploy', function (cb) {
-    ftpDeploy(frontend.dist);
+gulp.task('frontend:deploy', gulp.series('frontend:build', function (cb) {
+    ftpDeploy(frontend.dist)
     cb();
-});
+}));
 gulp.task('backend:deploy', function (cb) {
-    ftpDeploy(backend.src);
+    ftpDeploy(backend.dist);
     cb();
 });
