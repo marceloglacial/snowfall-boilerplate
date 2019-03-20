@@ -240,9 +240,9 @@ exports.wpWatch = wpWatch
 
 // 2.8 - Build
 function wpBuild() {
-    gulp
+    return gulp
         .src(backend.src + '**/*.*')
-        .pipe(gulp.dest(backend.dist))
+        .pipe(gulp.dest(backend.dist + 'wp-content/themes/' + backend.themeName ))
 };
 exports.wpBuild = wpBuild
 
