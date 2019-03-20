@@ -18,6 +18,7 @@ Sketch template file with:
 - HTML5 starter template files
 - <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a> ready
 - <a href="https://sass-lang.com/">SASS</a> ready
+- <a href="https://sass-guidelin.es/#architecture">SASS Architecture</a> ready
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
 ### Back-end
@@ -31,6 +32,9 @@ Sketch template file with:
 - JS minify on build
 - Optmized Images on build
 - <a href="https://www.browsersync.io/">BrowserSync Live Reloading</a>
+
+### CI/CD
+- <a href="#deploy">FTP Deploy</a> integrated
 
 
 ## Installation
@@ -46,17 +50,30 @@ Sketch template file with:
     npm install 
 ```
 
-# Usage 
+# How to User (gulp tasks) 
 
 ## Front-end
 
 - `frontend:start` - Starts Browser Live reloading and watch SASS files.
 - `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
+- `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server (default).
 
 ## Back-end
 
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
 - `backend:start` -  Starts Browser Live reloading and wath SASS files.
+- `backend:deploy` -  Build theme and upload all `back-end/src` files to FTP server (default).
+
+# Deploy
+
+Configure FTP deploy:
+
+1. Fill FTP credentials and serrver info on `credentials-sample.json` 
+2. Rename `credentials-sample.json` to `credentials.json`
+
+<strong>NOTE:</strong>
+Due sensitive information, `credentials-sample.json` WILL NOT BE on version control.
+
 
 # References
 - Front-end based on <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake Boilerplate</a> 
