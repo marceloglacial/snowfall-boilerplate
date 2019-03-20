@@ -72,7 +72,7 @@ Configure FTP deploy:
 2. Rename `credentials-sample.json` to `credentials.json`
 
 <strong>NOTE:</strong>
-Due sensitive information, `credentials-sample.json` WILL NOT BE on version control.
+Due sensitive information, `credentials.json` WILL NOT BE on version control.
 
 
 # References
