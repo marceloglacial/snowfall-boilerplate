@@ -64,7 +64,7 @@ Sketch template file with:
 - `backend:start` -  Starts Browser Live reloading and watch SASS files.
 - `backend:deploy` -  Build theme and upload all `back-end/src` files to FTP server (default).
 
-# Deploy
+## Deploy
 
 Configure FTP deploy:
 
