@@ -1,18 +1,13 @@
-const gulp = require('gulp'),
-    del = require('del'),
-    download = require('gulp-download'),
-    decompress = require('gulp-decompress'),
-    browserSync = require('browser-sync').create(),
-    sass = require('gulp-sass'),
-    autoprefixer = require('gulp-autoprefixer'),
-    sourcemaps = require('gulp-sourcemaps'),
-    uglify = require('gulp-uglify'),
-    imagemin = require('gulp-imagemin'),
-    htmlmin = require('gulp-htmlmin'),
-    ext_replace = require('gulp-ext-replace'),
-    clean = require('gulp-clean'),
-    multiDest = require('gulp-multi-dest'),
-    ftp = require('vinyl-ftp');
+// Load Gulp packages from package.json
+const gulpPackages = require('./package.json');
+const gulpDependencies = Object.keys(gulpPackages.devDependencies);
+for (const key in gulpDependencies) {
+    if (gulpDependencies.hasOwnProperty(key)) {
+        const element = gulpDependencies[key];
+        let str = element.replace('gulp-', '').replace('-', '_') + ' = require("' + element + '");';
+        eval(str);
+    }
+}
 
 // Paths
 const frontend = new function () {
@@ -34,7 +29,7 @@ const backend = new function () {
     this.dist = this.root + 'dist/';
     this.server = this.root + 'server/';
     this.tmp = this.root + 'tmp/';
-    this.themeName = 'snowfall-boilerplate';
+    this.themeName = gulpPackages.name;
     this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
 };
 
@@ -57,7 +52,7 @@ function styles() {
         }))
         .pipe(sourcemaps.write('./maps'))
         .pipe(gulp.dest(frontend.css))
-        .pipe(browserSync.stream())
+        .pipe(browser_sync.stream())
     );
 };
 exports.styles = styles
@@ -104,11 +99,11 @@ exports.html = html
 
 // 1.5 - Live Server
 function frontendReload() {
-    browserSync.reload();
+    browser_sync.reload();
 }
 
 function frontendWatch() {
-    browserSync.init({
+    browser_sync.init({
         server: {
             baseDir: frontend.src
         }
@@ -193,7 +188,7 @@ function backendCopyToWork() {
     return (
         gulp
         .src(backend.tmp + '/**/*.*')
-        .pipe(multiDest([backend.src, backend.themeFolder]))
+        .pipe(multi_dest([backend.src, backend.themeFolder]))
     )
 }
 exports.backendCopyToWork = backendCopyToWork
@@ -212,20 +207,20 @@ function wpClean() {
 };
 exports.wpClean = wpClean
 
-// 2.5 - BrowserSync 
+// 2.5 - browser_sync 
 function wpLive() {
     return (
         gulp
         .src(backend.src + '**/*.*')
         .pipe(gulp.dest(backend.themeFolder))
-        .pipe(browserSync.stream())
+        .pipe(browser_sync.stream())
     )
 };
 exports.wpLive = wpLive
 
 // 2.6 - Start server
 function wpStart() {
-    browserSync.init({
+    browser_sync.init({
         proxy: backend.proxy + '/' + backend.themeName + '/' + backend.server
     });
     wpWatch()
@@ -242,7 +237,7 @@ exports.wpWatch = wpWatch
 function wpBuild() {
     return gulp
         .src(backend.src + '**/*.*')
-        .pipe(gulp.dest(backend.dist + 'wp-content/themes/' + backend.themeName ))
+        .pipe(gulp.dest(backend.dist + 'wp-content/themes/' + backend.themeName))
 };
 exports.wpBuild = wpBuild
 
@@ -271,7 +266,7 @@ gulp.task('backend:build', wpBuild)
 
 function ftpDeploy(param) {
     let credentials = require('./credentials.json');
-    var conn = ftp.create({
+    var conn = vinyl_ftp.create({
         host: credentials.host,
         user: credentials.user,
         password: credentials.password,
