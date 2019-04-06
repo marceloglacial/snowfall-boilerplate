@@ -1,5 +1,5 @@
 // Load Packages
-const gulpPackages = require('./package.json');
+const projectConfig = require('./package.json');
 const gulp = require('gulp'),
     browser_sync = require('browser-sync'),
     del = require('del'),
@@ -38,7 +38,7 @@ const backend = new function () {
     this.dist = this.root + 'dist/';
     this.server = this.root + 'server/';
     this.tmp = this.root + 'tmp/';
-    this.themeName = gulpPackages.name;
+    this.themeName = projectConfig.name;
     this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
 };
 
