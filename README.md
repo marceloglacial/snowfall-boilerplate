@@ -78,4 +78,3 @@ Due sensitive information, `credentials.json` WILL NOT BE on version control.
 # References
 - Front-end based on <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake Boilerplate</a> 
 - Back-end based on <a href="https://github.com/marceloglacial/iceberg-boilerplate">Iceberg boilerplate</a>
-
