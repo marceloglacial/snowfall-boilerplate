@@ -1,13 +1,22 @@
-// Load Gulp packages from package.json
+// Load Packages
 const gulpPackages = require('./package.json');
-const gulpDependencies = Object.keys(gulpPackages.devDependencies);
-for (const key in gulpDependencies) {
-    if (gulpDependencies.hasOwnProperty(key)) {
-        const element = gulpDependencies[key];
-        let str = element.replace('gulp-', '').replace('-', '_') + ' = require("' + element + '");';
-        eval(str);
-    }
-}
+const gulp = require('gulp'),
+    browser_sync = require('browser-sync'),
+    del = require('del'),
+    autoprefixer = require('gulp-autoprefixer'),
+    clean = require('gulp-clean'),
+    decompress = require('gulp-decompress'),
+    download = require('gulp-download'),
+    ext_replace = require('gulp-ext-replace'),
+    htmlmin = require('gulp-htmlmin'),
+    imagemin = require('gulp-imagemin'),
+    multi_dest = require('gulp-multi-dest'),
+    sass = require('gulp-sass'),
+    sourcemaps= require('gulp-sourcemaps'),
+    uglify = require('gulp-uglify'),
+    util = require('gulp-util'),
+    vinyl_ftp = require('vinyl-ftp');
+
 
 // Paths
 const frontend = new function () {
