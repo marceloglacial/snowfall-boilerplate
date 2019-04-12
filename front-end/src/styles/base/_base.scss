@@ -21,15 +21,11 @@ html {
   box-sizing: inherit;
 }
 
-/**
- * Basic styles for links
- */
-a {
-  color: $brand-color;
-  text-decoration: none;
+.wrapper {
+  text-align: center;
+}
 
-  @include on-event {
-    color: $text-color;
-    text-decoration: underline;
-  }
+footer {
+  padding: 20px;
+  margin: 20px;
 }

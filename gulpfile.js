@@ -47,7 +47,7 @@ const frontend = new function () {
     this.styles = this.src + 'styles/**/*.scss';
     this.scripts = this.src + 'scripts/**/*.js';
     this.images = this.src + 'images/' + folders;
-    this.templates = this.src + 'templates/*.hbs';
+    this.templates = this.src + 'templates/**/*.hbs';
     this.partials = this.src + 'templates/partials';
 };
 
