@@ -1,4 +1,7 @@
-// Load Packages
+// ===================================================
+// 1. Gulp Packages
+// ===================================================
+//
 const projectConfig = require('./package.json');
 const gulp = require('gulp'),
     browser_sync = require('browser-sync'),
