@@ -1,59 +1,81 @@
 // ===================================================
-// 1. Gulp Packages
+// 1. Configuration
 // ===================================================
-//
+
+
+// 1.1 - Gulp Packages
+// ---------------------------------------------------
 const projectConfig = require('./package.json');
 const gulp = require('gulp'),
-    browser_sync = require('browser-sync'),
+    browserSync = require('browser-sync'),
     del = require('del'),
     autoprefixer = require('gulp-autoprefixer'),
-    clean = require('gulp-clean'),
     decompress = require('gulp-decompress'),
     download = require('gulp-download'),
-    ext_replace = require('gulp-ext-replace'),
     htmlmin = require('gulp-htmlmin'),
     imagemin = require('gulp-imagemin'),
+    handlebars = require('gulp-compile-handlebars'),
     multi_dest = require('gulp-multi-dest'),
+    rename = require('gulp-rename');
     sass = require('gulp-sass'),
-    sourcemaps= require('gulp-sourcemaps'),
+    sourcemaps = require('gulp-sourcemaps'),
     uglify = require('gulp-uglify'),
     util = require('gulp-util'),
     vinyl_ftp = require('vinyl-ftp');
 
 
-// Paths
+// 1.2 - Global Paths
+// ---------------------------------------------------
+const all = '**/*.*',
+    folders = '**/*'
+
+
+// ===================================================
+// 2. Front-end
+// ===================================================
+
+
+// 2.1 - Paths
+// ---------------------------------------------------
 const frontend = new function () {
-    this.root = './front-end/';
-    this.all = this.root + '**/*.*';
+    this.root = 'front-end/';
+    this.all = this.root + all;
     this.src = this.root + 'src/';
     this.dist = this.root + 'dist/';
-    this.css = this.src + 'assets/css/';
-    this.sass = this.src + 'assets/sass/**/*.scss';
-    this.js = this.src + 'assets/js/**/*.js';
-    this.images = this.src + 'assets/img/**/*.*';
-};
-const backend = new function () {
-    this.url = 'https://wordpress.org';
-    this.version = 'latest.zip';
-    this.proxy = 'http://localhost:8888';
-    this.root = './back-end/';
-    this.src = this.root + 'src/';
-    this.dist = this.root + 'dist/';
-    this.server = this.root + 'server/';
-    this.tmp = this.root + 'tmp/';
-    this.themeName = projectConfig.name;
-    this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
+    this.assets = this.src + 'assets/' + folders;
+    this.vendors = this.src + 'vendors/' + folders;
+    this.styles = this.src + 'styles/**/*.scss';
+    this.scripts = this.src + 'scripts/**/*.js';
+    this.images = this.src + 'images/' + folders;
+    this.templates = this.src + 'templates/*.hbs';
+    this.partials = this.src + 'templates/partials';
 };
 
-// ===================================================
-// 1. Front-end
-// ===================================================
 
-// 1.1 - Minify CSS with SASS
+// 2.2 - Assets
+// ---------------------------------------------------
+function assets() {
+    return gulp.src(frontend.assets)
+        .pipe(gulp.dest(frontend.dist))
+}
+exports.assets = assets;
+
+
+// 2.3 - Vendors
+// ---------------------------------------------------
+function vendors() {
+    return gulp.src(frontend.vendors)
+        .pipe(gulp.dest(frontend.dist + 'assets/'))
+}
+exports.vendors = vendors;
+
+
+// 2.4 - Styles
+// ---------------------------------------------------
 function styles() {
     return (
         gulp
-        .src(frontend.sass)
+        .src(frontend.styles)
         .pipe(sourcemaps.init())
         .pipe(sass({
             outputStyle: 'compressed'
@@ -63,37 +85,65 @@ function styles() {
             browsers: ['last 2 versions'],
         }))
         .pipe(sourcemaps.write('./maps'))
-        .pipe(gulp.dest(frontend.css))
-        .pipe(browser_sync.stream())
+        .pipe(rename({
+            suffix: '.min'
+        }))
+        .pipe(gulp.dest(frontend.dist + 'assets/css/'))
+        .pipe(browserSync.stream())
     );
 };
 exports.styles = styles
 
-// 1.2 - Minify JavaScript
+
+// 2.5 - Scripts
+// ---------------------------------------------------
 function scripts() {
     return (
         gulp
-        .src(frontend.js, {
+        .src(frontend.scripts, {
             sourcemaps: true
         })
         .pipe(uglify())
+        .pipe(rename({
+            suffix: '.min'
+        }))
         .pipe(gulp.dest(frontend.dist + '/assets/js/'))
     );
 };
 exports.scripts = scripts
 
-// 1.3 - Minify Images
+// 2.6 - Images
+// ---------------------------------------------------
 function images() {
     return (
         gulp
-        .src(frontend.src + '/**/*.*')
+        .src(frontend.images)
         .pipe(imagemin())
-        .pipe(gulp.dest(frontend.dist))
+        .pipe(gulp.dest(frontend.dist + 'assets/img/'))
     )
 };
 exports.images = images
 
-// 1.4 - Minify HTML 
+// 2.7 - Templates
+// ---------------------------------------------------
+function templates() {
+    var templateData = {},
+        options = {
+            ignorePartials: true,
+            batch: [frontend.partials]
+        }
+    return gulp.src(frontend.templates)
+        .pipe(handlebars(templateData, options))
+        .pipe(rename(function (path) {
+            path.extname = '.html';
+        }))
+        .pipe(gulp.dest(frontend.dist))
+};
+exports.templates = templates;
+
+
+// 2.8 - HTML
+// ---------------------------------------------------
 function html() {
     return (
         gulp
@@ -109,13 +159,18 @@ function html() {
 };
 exports.html = html
 
+// 2.8 - Build
+// ---------------------------------------------------
+const frontBuild = gulp.series(clean, assets, vendors, styles, scripts, images, templates);
+gulp.task('frontend-build', frontBuild);
+
 // 1.5 - Live Server
 function frontendReload() {
-    browser_sync.reload();
+    browserSync.reload();
 }
 
 function frontendWatch() {
-    browser_sync.init({
+    browserSync.init({
         server: {
             baseDir: frontend.src
         }
@@ -140,6 +195,19 @@ gulp.task('frontend:start', frontendWatch)
 // * Start PHP and MySQL servers 
 // * Create a WordPress database
 //
+
+const backend = new function () {
+    this.url = 'https://wordpress.org';
+    this.version = 'latest.zip';
+    this.proxy = 'http://localhost:8888';
+    this.root = './back-end/';
+    this.src = this.root + 'src/';
+    this.dist = this.root + 'dist/';
+    this.server = this.root + 'server/';
+    this.tmp = this.root + 'tmp/';
+    this.themeName = projectConfig.name;
+    this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
+};
 
 // 2.1 - Download Wordpress
 function wpDownload() {
@@ -219,20 +287,20 @@ function wpClean() {
 };
 exports.wpClean = wpClean
 
-// 2.5 - browser_sync 
+// 2.5 - browserSync 
 function wpLive() {
     return (
         gulp
         .src(backend.src + '**/*.*')
         .pipe(gulp.dest(backend.themeFolder))
-        .pipe(browser_sync.stream())
+        .pipe(browserSync.stream())
     )
 };
 exports.wpLive = wpLive
 
 // 2.6 - Start server
 function wpStart() {
-    browser_sync.init({
+    browserSync.init({
         proxy: backend.proxy + '/' + backend.themeName + '/' + backend.server
     });
     wpWatch()
@@ -275,6 +343,14 @@ gulp.task('backend:build', wpBuild)
 // Due sensitive information,
 // this file WILL NOT BE on version control.
 //
+
+// 3.1 - Clean
+// ---------------------------------------------------
+function clean() {
+    return del(frontend.dist);
+}
+exports.clean = clean;
+
 
 function ftpDeploy(param) {
     let credentials = require('./credentials.json');
