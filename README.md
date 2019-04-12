@@ -68,7 +68,7 @@ Sketch template file with:
 
 Configure FTP deploy:
 
-1. Fill FTP credentials and serrver info on `credentials-sample.json` 
+1. Fill FTP credentials and server info on `credentials-sample.json` 
 2. Rename `credentials-sample.json` to `credentials.json`
 
 <strong>NOTE:</strong>
