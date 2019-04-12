@@ -57,7 +57,7 @@ const frontend = new function () {
 function assets() {
     return gulp.src(frontend.assets)
         .pipe(gulp.dest(frontend.dist))
-}
+};
 exports.assets = assets;
 
 
@@ -66,7 +66,7 @@ exports.assets = assets;
 function vendors() {
     return gulp.src(frontend.vendors)
         .pipe(gulp.dest(frontend.dist + 'assets/'))
-}
+};
 exports.vendors = vendors;
 
 
@@ -92,7 +92,7 @@ function styles() {
         .pipe(browserSync.stream())
     );
 };
-exports.styles = styles
+exports.styles = styles;
 
 
 // 2.5 - Scripts
@@ -110,7 +110,7 @@ function scripts() {
         .pipe(gulp.dest(frontend.dist + '/assets/js/'))
     );
 };
-exports.scripts = scripts
+exports.scripts = scripts;
 
 // 2.6 - Images
 // ---------------------------------------------------
@@ -122,7 +122,7 @@ function images() {
         .pipe(gulp.dest(frontend.dist + 'assets/img/'))
     )
 };
-exports.images = images
+exports.images = images;
 
 // 2.7 - Templates
 // ---------------------------------------------------
@@ -147,7 +147,7 @@ exports.templates = templates;
 function html() {
     return (
         gulp
-        .src(frontend.src + '/**/*.html')
+        .src(frontend.dist + '/**/*.html')
         .pipe(htmlmin({
             collapseWhitespace: true,
             removeComments: true,
@@ -157,34 +157,31 @@ function html() {
         .pipe(gulp.dest(frontend.dist))
     )
 };
-exports.html = html
+exports.html = html;
+
 
 // 2.8 - Build
 // ---------------------------------------------------
-const frontBuild = gulp.series(clean, assets, vendors, styles, scripts, images, templates);
+const frontBuild = gulp.series(clean, assets, vendors, styles, scripts, images, templates, html);
 gulp.task('frontend-build', frontBuild);
+
 
 // 1.5 - Live Server
 function frontendReload() {
     browserSync.reload();
 }
 
+const frontReload = gulp.series(frontBuild, frontendReload);
+
 function frontendWatch() {
     browserSync.init({
         server: {
-            baseDir: frontend.src
+            baseDir: frontend.dist
         }
     });
-    gulp.watch(frontend.sass).on('change', styles);
-    gulp.watch(frontend.src + '**/*.*').on('change', frontendReload);
-}
-
-// 1.6 - Build
-const frontendBuild = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
-
-// 1.7 - Commands
-gulp.task('frontend:build', frontendBuild)
-gulp.task('frontend:start', frontendWatch)
+    gulp.watch(frontend.src + '**/*.*').on('change', frontReload);
+};
+gulp.task('frontend-start', frontendWatch);
 
 //
 // ===================================================
@@ -372,7 +369,7 @@ function ftpDeploy(param) {
         .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
         .pipe(conn.dest(credentials.remoteFolder));
 }
-gulp.task('frontend:deploy', gulp.series('frontend:build', function (cb) {
+gulp.task('frontend:deploy', gulp.series('frontend-build', function (cb) {
     ftpDeploy(frontend.dist)
     cb();
 }));
