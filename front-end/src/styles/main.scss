@@ -7,14 +7,15 @@
   'abstracts/mixins';
 
 // 2. Vendors
-// @import
-//   'vendors/normalize';
+@import
+  'vendors/normalize';
 
 // 3. Base stuff
 @import
   'base/base',
   'base/fonts',
   'base/typography',
+  'base/grid',
   'base/helpers';
 
 // 4. Layout-related sections

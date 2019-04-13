@@ -227,14 +227,14 @@ gulp.task('frontend:develop',
         'frontend:styles', 
         'frontend:scripts', 
         () => copy(frontend.images, frontend.dist + 'assets/img/'), 
-        'frontend:templates', 
-        'frontend:html'
+        'frontend:templates'
     )
 );
 
 // 2.11 - Start Server
 // ------------------------------
-gulp.task('frontend:server', () => liveServer(frontend.dist));
+gulp.task('frontend:server', gulp.series('frontend:develop', () => liveServer(frontend.dist)));
+gulp.task('frontend:start', gulp.series('frontend:server'));
 
 // // =============================================================
 // // 2. Back-end
