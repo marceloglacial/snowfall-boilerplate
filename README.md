@@ -54,7 +54,7 @@ Sketch template file with:
 
 ## Front-end
 
-- `npm run front` - Start developement
+- `npm run frontend` - Start developement
 
 ### Gulp tasks
 - `frontend:start` - Starts Browser Live reloading and watch SASS files.
