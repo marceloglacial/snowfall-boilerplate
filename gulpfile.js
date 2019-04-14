@@ -14,9 +14,8 @@ const gulp = require('gulp'),
     htmlmin = require('gulp-htmlmin'),
     imagemin = require('gulp-imagemin'),
     handlebars = require('gulp-compile-handlebars'),
-    multi_dest = require('gulp-multi-dest'),
     rename = require('gulp-rename');
-    sass = require('gulp-sass'),
+sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
     uglify = require('gulp-uglify'),
     util = require('gulp-util'),
@@ -132,14 +131,17 @@ function copy(src, dest) {
 
 // 2.8 - Start server
 // ------------------------------
-function liveServer(path) {
-    browserSync.init({
+function liveServer(path, proxy) {
+    let options = proxy ? {
+        proxy: backend.live
+    } : {
         server: {
             baseDir: path
         }
-    });
+    };
+    browserSync.init(options);
     gulp.watch(frontend.src).on('change', gulp.series('frontend:develop', liveReload));
-    // gulp.watch(backend.all).on('change', gulp.series('build', liveReload));
+    gulp.watch(backend.src).on('change', gulp.series('backend:develop', liveReload));
 };
 
 
@@ -190,242 +192,175 @@ gulp.task('frontend:scripts', () => scripts(frontend.scripts, frontend.dist + '/
 // ------------------------------
 gulp.task('frontend:images', () => images(frontend.images, frontend.dist + 'assets/img/'));
 
-// 2.7 - Templates
+// 3.7 - Templates
 // ------------------------------
 gulp.task('frontend:templates', () => templates(frontend.templates, frontend.partials, frontend.dist));
 
-// 2.8 - HTML
+// 3.8 - HTML
 // ------------------------------
 gulp.task('frontend:html', () => html(frontend.dist + '/**/*.html', frontend.dist));
 
-// 2.8 - HTML
+// 3.9 - Clean build files
 // ------------------------------
 gulp.task('frontend:clean', () => clean(frontend.dist));
 
-// 2.10 - Build
+// 3.10 - Build
 // ------------------------------
-gulp.task('frontend:build', 
+gulp.task('frontend:build',
     gulp.series(
-        'frontend:clean', 
-        'frontend:assets', 
-        'frontend:vendors', 
-        'frontend:styles', 
-        'frontend:scripts', 
-        'frontend:images', 
-        'frontend:templates', 
+        'frontend:clean',
+        'frontend:assets',
+        'frontend:vendors',
+        'frontend:styles',
+        'frontend:scripts',
+        'frontend:images',
+        'frontend:templates',
         'frontend:html'
     )
 );
 
-// 2.11 - Develop
+// 3.11 - Develop
 // ------------------------------
-gulp.task('frontend:develop', 
+gulp.task('frontend:develop',
     gulp.series(
-        'frontend:clean', 
-        'frontend:assets', 
-        'frontend:vendors', 
-        'frontend:styles', 
-        'frontend:scripts', 
-        () => copy(frontend.images, frontend.dist + 'assets/img/'), 
+        'frontend:clean',
+        'frontend:assets',
+        'frontend:vendors',
+        'frontend:styles',
+        'frontend:scripts',
+        () => copy(frontend.images, frontend.dist + 'assets/img/'),
         'frontend:templates'
     )
 );
 
-// 2.11 - Start Server
+// 3.12 - Start Server
 // ------------------------------
 gulp.task('frontend:server', gulp.series('frontend:develop', () => liveServer(frontend.dist)));
 gulp.task('frontend:start', gulp.series('frontend:server'));
 
-// // =============================================================
-// // 2. Back-end
-// // =============================================================
-// //
-// // Fisrt steps:
-// // * Start PHP and MySQL servers 
-// // * Create a WordPress database
-// //
-
-// const backend = new function () {
-//     this.url = 'https://wordpress.org';
-//     this.version = 'latest.zip';
-//     this.proxy = 'http://localhost:8888';
-//     this.root = './back-end/';
-//     this.src = this.root + 'src/';
-//     this.dist = this.root + 'dist/';
-//     this.server = this.root + 'server/';
-//     this.tmp = this.root + 'tmp/';
-//     this.themeName = projectConfig.name;
-//     this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
-// };
-
-// // 2.1 - Download Wordpress
-// function wpDownload() {
-//     return (
-//         download(backend.url + '/' + backend.version)
-//         .pipe(gulp.dest(backend.tmp))
-//     )
-// };
-// exports.wpDownload = wpDownload
-
-// // 2.2 - Decompress Wordpress and add to server folder
-// function wpUnzip() {
-//     return (
-//         gulp
-//         .src(backend.tmp + '/*.{tar,tar.bz2,tar.gz,zip}')
-//         .pipe(decompress({
-//             strip: 1
-//         }))
-//         .pipe(gulp.dest(backend.server))
-//     )
-// };
-// exports.wpUnzip = wpUnzip
-
-// // 2.3 - Copy files from Front-end to Back-end workfolder and server folder
-// // 2.3.1 -  Copy files 
-// function backendCopyToTemp() {
-//     return (
-//         gulp
-//         .src(frontend.src + '/**/*.*')
-//         .pipe(gulp.dest(backend.tmp))
-//     )
-// }
-// exports.backendCopyToTemp = backendCopyToTemp
-
-// // 2.3.2 - Rename index files to php
-// function backendRename() {
-//     return (
-//         gulp
-//         .src(backend.tmp + '/**/*.html')
-//         .pipe(ext_replace('.php'))
-//         .pipe(gulp.dest(backend.tmp))
-//     )
-// }
-// exports.backendRename = backendRename
-
-// // 2.3.3 -  Delete html files 
-// function backendClean() {
-//     return (
-//         gulp
-//         .src(backend.tmp + '/**/*.html')
-//         .pipe(clean())
-//     )
-// }
-// exports.backendClean = backendClean
-
-// // 2.3.4 -  Copy files to workfolder and server
-// function backendCopyToWork() {
-//     return (
-//         gulp
-//         .src(backend.tmp + '/**/*.*')
-//         .pipe(multi_dest([backend.src, backend.themeFolder]))
-//     )
-// }
-// exports.backendCopyToWork = backendCopyToWork
 
 
-// // 2.3.5 - Run all tasks in series 
-// const wpCopy = gulp.series([backendCopyToTemp, backendRename, backendClean, backendCopyToWork, () => del(backend.tmp)]);
-// gulp.task('wpCopy', wpCopy)
+// =============================================================
+// 4. Back-end
+// =============================================================
+//
+// First steps:
+// * Start PHP and MySQL servers 
+// * Create a WordPress database
+//
+
+const backend = new function () {
+    this.url = 'https://wordpress.org';
+    this.version = 'latest.zip';
+    this.proxy = 'http://localhost:8888';
+    this.root = 'back-end/';
+    this.src = this.root + 'src/';
+    this.dist = this.root + 'dist/';
+    this.server = this.root + 'server/';
+    this.tmp = this.root + 'tmp/';
+    this.themeName = projectConfig.name;
+    this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
+    this.live = this.proxy + '/' + this.themeName + '/' + this.server;
+};
+
+// 4.1 - Download Wordpress
+function wpDownload() {
+    return (
+        download(backend.url + '/' + backend.version)
+        .pipe(gulp.dest(backend.tmp))
+    )
+};
+
+// 4.2 - Decompress Wordpress and add to server folder
+function wpUnzip() {
+    return (
+        gulp
+        .src(backend.tmp + '/*.{tar,tar.bz2,tar.gz,zip}')
+        .pipe(decompress({
+            strip: 1
+        }))
+        .pipe(gulp.dest(backend.server))
+    )
+};
+
+// 4.3 - Rename index files to php
+function backendRename() {
+    return (
+        gulp
+        .src(backend.tmp + '/**/*.html')
+        .pipe(rename(function (file) {
+            file.extname = ".php";
+        }))
+        .pipe(gulp.dest(backend.tmp))
+    )
+};
+
+// 4.4 - Install Backend
+gulp.task('backend:install', gulp.series(
+    'frontend:develop',
+    () => del(backend.tmp),
+    wpDownload,
+    wpUnzip,
+    () => del(backend.tmp),
+    () => copy(frontend.dist + '/**/*.*', backend.tmp),
+    backendRename,
+    () => del(backend.tmp + '**/*.html'),
+    () => copy(backend.tmp + '/**/*.*', backend.src),
+    () => copy(backend.tmp + '/**/*.*', backend.themeFolder),
+    () => del(backend.tmp)
+));
+
+// 4.4 - Install Backend
+gulp.task('backend:develop', gulp.series(
+    () => del(backend.themeFolder),
+    () => copy(backend.src + '/**/*.*', backend.themeFolder),
+));
 
 
-// // 2.4 - Delete WordPress files
-// function wpClean() {
-//     return (
-//         del([backend.tmp, backend.server])
-//     )
-// };
-// exports.wpClean = wpClean
+// 4.5 - Start Backend
+gulp.task('backend:start', gulp.series(
+    'backend:develop',
+    () => liveServer(backend.base, backend.proxy)
+));
 
-// // 2.5 - browserSync 
-// function wpLive() {
-//     return (
-//         gulp
-//         .src(backend.src + '**/*.*')
-//         .pipe(gulp.dest(backend.themeFolder))
-//         .pipe(browserSync.stream())
-//     )
-// };
-// exports.wpLive = wpLive
-
-// // 2.6 - Start server
-// function wpStart() {
-//     browserSync.init({
-//         proxy: backend.proxy + '/' + backend.themeName + '/' + backend.server
-//     });
-//     wpWatch()
-// };
-// exports.wpStart = wpStart
-
-// // 2.7 - Watch
-// function wpWatch() {
-//     gulp.watch(backend.src).on('change', wpLive);
-// };
-// exports.wpWatch = wpWatch
-
-// // 2.8 - Build
-// function wpBuild() {
-//     return gulp
-//         .src(backend.src + '**/*.*')
-//         .pipe(gulp.dest(backend.dist + 'wp-content/themes/' + backend.themeName))
-// };
-// exports.wpBuild = wpBuild
-
-// // 2.9 - Back-end commands 
-// const wpInstall = gulp.series(wpClean, wpDownload, wpUnzip, () => del(backend.tmp), wpCopy)
-// gulp.task('backend:install', wpInstall)
-// gulp.task('backend:start', wpStart)
-// gulp.task('backend:build', wpBuild)
+// 4.6 - Build Backend
+gulp.task('backend:build', gulp.series(
+    () => del(backend.dist),
+    () => copy(backend.themeFolder + '/**/*.*', backend.dist + 'wp-content/themes/' + backend.themeName)
+));
 
 
+// =============================================================
+// 5. FTP Deploy
+// =============================================================
+// 
+// Please fill info and rename credentials-sample.json
+// to credentials.json
+//
+// NOTE: 
+// Due sensitive information,
+// this file WILL NOT BE on version control.
+//
 
-// //
-// // =============================================================
-// // 3. Global Taks
-// // =============================================================
-// //
-
-// // 3.1 - FTP Deploy
-// // Please fill info and rename credentials-sample.json
-// // to credentials.json
-// //
-// // NOTE: 
-// // Due sensitive information,
-// // this file WILL NOT BE on version control.
-// //
-
-// // 3.1 - Clean
-// // ------------------------------
-// function clean() {
-//     return del(frontend.dist);
-// }
-// exports.clean = clean;
-
-
-// function ftpDeploy(param) {
-//     let credentials = require('./credentials.json');
-//     var conn = vinyl_ftp.create({
-//         host: credentials.host,
-//         user: credentials.user,
-//         password: credentials.password,
-//         parallel: credentials.parallel,
-//         log: credentials.log
-//     });
-//     console.log('Uploading ' + param + ' files ...');
-//     let globs = [
-//         param + '**/*.*',
-//     ];
-//     var options = {
-//         buffer: false
-//     }
-//     return gulp.src(globs, options)
-//         .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
-//         .pipe(conn.dest(credentials.remoteFolder));
-// }
-// gulp.task('frontend:deploy', gulp.series('frontend-build', function (cb) {
-//     ftpDeploy(frontend.dist)
-//     cb();
-// }));
-// gulp.task('backend:deploy', gulp.series('backend:build', function (cb) {
-//     ftpDeploy(backend.dist)
-//     cb();
-// }));
+function ftpDeploy(param) {
+    let credentials = require('./credentials.json');
+    var conn = vinyl_ftp.create({
+        host: credentials.host,
+        user: credentials.user,
+        password: credentials.password,
+        parallel: credentials.parallel,
+        log: credentials.log
+    });
+    console.log('Uploading ' + param + ' files ...');
+    let globs = [
+        param + '**/*.*',
+    ];
+    var options = {
+        buffer: false
+    }
+    return gulp.src(globs, options)
+        .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
+        .pipe(conn.dest(credentials.remoteFolder));
+}
+gulp.task('frontend:deploy', gulp.series('frontend:build', () => ftpDeploy(frontend.dist)));
+gulp.task('backend:deploy', gulp.series('backend:build', () => ftpDeploy(backend.dist)));
