@@ -11,6 +11,10 @@
   "bugs": {
     "url": "https://github.com/marceloglacial/snowfall-boilerplate/issues"
   },
+  "scripts": {
+    "frontend": "gulp frontend:start",
+    "backend": "docker-compose up -d && gulp backend:start"
+  },
   "homepage": "https://github.com/marceloglacial/snowfall-boilerplate#readme",
   "devDependencies": {
     "autoprefixer": "^9.5.0",
