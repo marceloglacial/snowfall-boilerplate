@@ -1,7 +1,7 @@
 # Snowfall Boilerplate
 
 End-to-end web project based on three stages:
-1. Design (<a href="https://www.sketchapp.com/">Sketch</a>)
+1. Design (<a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a>)
 2. Front-end (HTML5/CSS/JS/SASS)
 3. Back-end (<a href="https://wordpress.org/">WordPress</a>)
 
@@ -54,12 +54,18 @@ Sketch template file with:
 
 ## Front-end
 
+- `npm run front` - Start developement
+
+### Gulp tasks
 - `frontend:start` - Starts Browser Live reloading and watch SASS files.
 - `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
 - `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server (default).
 
 ## Back-end
 
+- `npm run backend` - Start developement
+
+### Gulp tasks
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
 - `backend:start` -  Starts Browser Live reloading and watch SASS files.
 - `backend:deploy` -  Build theme and upload all `back-end/src` files to FTP server (default).
