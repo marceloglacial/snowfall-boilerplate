@@ -1,153 +1,277 @@
-// Load Packages
+// =============================================================
+// 1. Configuration
+// =============================================================
+
+// 1.1 - Gulp Packages
+// ------------------------------
 const projectConfig = require('./package.json');
 const gulp = require('gulp'),
-    browser_sync = require('browser-sync'),
+    browserSync = require('browser-sync'),
     del = require('del'),
     autoprefixer = require('gulp-autoprefixer'),
-    clean = require('gulp-clean'),
     decompress = require('gulp-decompress'),
     download = require('gulp-download'),
-    ext_replace = require('gulp-ext-replace'),
     htmlmin = require('gulp-htmlmin'),
     imagemin = require('gulp-imagemin'),
-    multi_dest = require('gulp-multi-dest'),
-    sass = require('gulp-sass'),
-    sourcemaps= require('gulp-sourcemaps'),
+    handlebars = require('gulp-compile-handlebars'),
+    rename = require('gulp-rename');
+sass = require('gulp-sass'),
+    sourcemaps = require('gulp-sourcemaps'),
     uglify = require('gulp-uglify'),
     util = require('gulp-util'),
     vinyl_ftp = require('vinyl-ftp');
 
 
-// Paths
-const frontend = new function () {
-    this.root = './front-end/';
-    this.all = this.root + '**/*.*';
-    this.src = this.root + 'src/';
-    this.dist = this.root + 'dist/';
-    this.css = this.src + 'assets/css/';
-    this.sass = this.src + 'assets/sass/**/*.scss';
-    this.js = this.src + 'assets/js/**/*.js';
-    this.images = this.src + 'assets/img/**/*.*';
-};
-const backend = new function () {
-    this.url = 'https://wordpress.org';
-    this.version = 'latest.zip';
-    this.proxy = 'http://localhost:8888';
-    this.root = './back-end/';
-    this.src = this.root + 'src/';
-    this.dist = this.root + 'dist/';
-    this.server = this.root + 'server/';
-    this.tmp = this.root + 'tmp/';
-    this.themeName = projectConfig.name;
-    this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
+// 1.2 - Global Paths
+// ------------------------------
+const all = '**/*.*',
+    folders = '**/*'
+
+
+// ==============================================================
+// 2. Functions
+// ==============================================================
+
+// 2.1 - Clean folder
+// ------------------------------
+function clean(path) {
+    return del(path);
 };
 
-// ===================================================
-// 1. Front-end
-// ===================================================
 
-// 1.1 - Minify CSS with SASS
-function styles() {
-    return (
-        gulp
-        .src(frontend.sass)
+// 2.2 - Complie SASS
+// ------------------------------
+function styles(src, dest) {
+    return gulp
+        .src(src)
         .pipe(sourcemaps.init())
         .pipe(sass({
             outputStyle: 'compressed'
         }))
         .on('error', sass.logError)
         .pipe(autoprefixer({
-            browsers: ['last 2 versions'],
+            browsers: ['last 3 versions'],
         }))
         .pipe(sourcemaps.write('./maps'))
-        .pipe(gulp.dest(frontend.css))
-        .pipe(browser_sync.stream())
-    );
+        .pipe(rename({
+            suffix: '.min'
+        }))
+        .pipe(gulp.dest(dest))
 };
-exports.styles = styles
 
-// 1.2 - Minify JavaScript
-function scripts() {
+
+// 2.3 - Minimize Scripts
+// ------------------------------
+function scripts(src, dist) {
     return (
         gulp
-        .src(frontend.js, {
+        .src(src, {
             sourcemaps: true
         })
         .pipe(uglify())
-        .pipe(gulp.dest(frontend.dist + '/assets/js/'))
+        .pipe(rename({
+            suffix: '.min'
+        }))
+        .pipe(gulp.dest(dist))
     );
 };
-exports.scripts = scripts
 
-// 1.3 - Minify Images
-function images() {
+
+// 2.4 - Optmize images
+// ------------------------------
+function images(src, dest) {
     return (
         gulp
-        .src(frontend.src + '/**/*.*')
+        .src(src)
         .pipe(imagemin())
-        .pipe(gulp.dest(frontend.dist))
+        .pipe(gulp.dest(dest))
     )
 };
-exports.images = images
 
-// 1.4 - Minify HTML 
-function html() {
+
+// 2.5 - Complie Handlebars templates
+// ------------------------------
+function templates(templates, partials, dest) {
+    var templateData = {},
+        options = {
+            ignorePartials: true,
+            batch: [partials]
+        }
+    return gulp.src(templates)
+        .pipe(handlebars(templateData, options))
+        .pipe(rename(function (path) {
+            path.extname = '.html';
+        }))
+        .pipe(gulp.dest(dest))
+};
+
+// 2.6 - HTML
+// ------------------------------
+function html(src, dest) {
     return (
         gulp
-        .src(frontend.src + '/**/*.html')
+        .src(src)
         .pipe(htmlmin({
             collapseWhitespace: true,
             removeComments: true,
             minifyCSS: true,
             minifyJS: true
         }))
-        .pipe(gulp.dest(frontend.dist))
+        .pipe(gulp.dest(dest))
     )
 };
-exports.html = html
 
-// 1.5 - Live Server
-function frontendReload() {
-    browser_sync.reload();
-}
+// 2.7 - Copy
+// ------------------------------
+function copy(src, dest) {
+    return gulp.src(src)
+        .pipe(gulp.dest(dest));
+};
 
-function frontendWatch() {
-    browser_sync.init({
+
+// 2.8 - Start server
+// ------------------------------
+function liveServer(path, proxy) {
+    let options = proxy ? {
+        proxy: backend.live
+    } : {
         server: {
-            baseDir: frontend.src
+            baseDir: path
         }
-    });
-    gulp.watch(frontend.sass).on('change', styles);
-    gulp.watch(frontend.src + '**/*.*').on('change', frontendReload);
-}
+    };
+    browserSync.init(options);
+    gulp.watch(frontend.src).on('change', gulp.series('frontend:develop', liveReload));
+    gulp.watch(backend.src).on('change', gulp.series('backend:develop', liveReload));
+};
 
-// 1.6 - Build
-const frontendBuild = gulp.series(() => del(frontend.dist), styles, images, scripts, html)
 
-// 1.7 - Commands
-gulp.task('frontend:build', frontendBuild)
-gulp.task('frontend:start', frontendWatch)
+// 2.9 - Reload page
+// ------------------------------
+function liveReload() {
+    browserSync.reload();
+};
 
+
+// =============================================================
+// 3. Front-end
+// =============================================================
+
+// 3.1 - Paths
+// ------------------------------
+const frontend = new function () {
+    this.root = 'front-end/';
+    this.all = this.root + all;
+    this.src = this.root + 'src/';
+    this.dist = this.root + 'dist/';
+    this.assets = this.src + 'assets/' + folders;
+    this.vendors = this.src + 'vendors/' + folders;
+    this.styles = this.src + 'styles/**/*.scss';
+    this.scripts = this.src + 'scripts/**/*.js';
+    this.images = this.src + 'images/' + folders;
+    this.templates = this.src + 'templates/*.hbs';
+    this.partials = this.src + 'templates/partials';
+};
+
+// 3.2 - Assets
+// ------------------------------
+gulp.task('frontend:assets', () => copy(frontend.assets, frontend.dist));
+
+// 3.3 - Vendors
+// ------------------------------
+gulp.task('frontend:vendors', () => copy(frontend.vendors, frontend.dist + 'assets/'));
+
+// 3.4 - Styles
+// ------------------------------
+gulp.task('frontend:styles', () => styles(frontend.styles, frontend.dist + 'assets/css/'));
+
+// 3.5 - Scripts
+// ------------------------------
+gulp.task('frontend:scripts', () => scripts(frontend.scripts, frontend.dist + '/assets/js/'));
+
+// 3.6 - Images
+// ------------------------------
+gulp.task('frontend:images', () => images(frontend.images, frontend.dist + 'assets/img/'));
+
+// 3.7 - Templates
+// ------------------------------
+gulp.task('frontend:templates', () => templates(frontend.templates, frontend.partials, frontend.dist));
+
+// 3.8 - HTML
+// ------------------------------
+gulp.task('frontend:html', () => html(frontend.dist + '/**/*.html', frontend.dist));
+
+// 3.9 - Clean build files
+// ------------------------------
+gulp.task('frontend:clean', () => clean(frontend.dist));
+
+// 3.10 - Build
+// ------------------------------
+gulp.task('frontend:build',
+    gulp.series(
+        'frontend:clean',
+        'frontend:assets',
+        'frontend:vendors',
+        'frontend:styles',
+        'frontend:scripts',
+        'frontend:images',
+        'frontend:templates',
+        'frontend:html'
+    )
+);
+
+// 3.11 - Develop
+// ------------------------------
+gulp.task('frontend:develop',
+    gulp.series(
+        'frontend:clean',
+        'frontend:assets',
+        'frontend:vendors',
+        'frontend:styles',
+        'frontend:scripts',
+        () => copy(frontend.images, frontend.dist + 'assets/img/'),
+        'frontend:templates'
+    )
+);
+
+// 3.12 - Start Server
+// ------------------------------
+gulp.task('frontend:server', gulp.series('frontend:develop', () => liveServer(frontend.dist)));
+gulp.task('frontend:start', gulp.series('frontend:server'));
+
+
+
+// =============================================================
+// 4. Back-end
+// =============================================================
 //
-// ===================================================
-// 2. Back-end
-// ===================================================
-//
-// Fisrt steps:
+// First steps:
 // * Start PHP and MySQL servers 
 // * Create a WordPress database
 //
 
-// 2.1 - Download Wordpress
+const backend = new function () {
+    this.url = 'https://wordpress.org';
+    this.version = 'latest.zip';
+    this.proxy = 'http://localhost:8888';
+    this.root = 'back-end/';
+    this.src = this.root + 'src/';
+    this.dist = this.root + 'dist/';
+    this.server = this.root + 'server/';
+    this.tmp = this.root + 'tmp/';
+    this.themeName = projectConfig.name;
+    this.themeFolder = this.server + 'wp-content/themes/' + this.themeName;
+    this.live = this.proxy + '/' + this.themeName + '/' + this.server;
+};
+
+// 4.1 - Download Wordpress
 function wpDownload() {
     return (
         download(backend.url + '/' + backend.version)
         .pipe(gulp.dest(backend.tmp))
     )
 };
-exports.wpDownload = wpDownload
 
-// 2.2 - Decompress Wordpress and add to server folder
+// 4.2 - Decompress Wordpress and add to server folder
 function wpUnzip() {
     return (
         gulp
@@ -158,113 +282,58 @@ function wpUnzip() {
         .pipe(gulp.dest(backend.server))
     )
 };
-exports.wpUnzip = wpUnzip
 
-// 2.3 - Copy files from Front-end to Back-end workfolder and server folder
-// 2.3.1 -  Copy files 
-function backendCopyToTemp() {
-    return (
-        gulp
-        .src(frontend.src + '/**/*.*')
-        .pipe(gulp.dest(backend.tmp))
-    )
-}
-exports.backendCopyToTemp = backendCopyToTemp
-
-// 2.3.2 - Rename index files to php
+// 4.3 - Rename index files to php
 function backendRename() {
     return (
         gulp
         .src(backend.tmp + '/**/*.html')
-        .pipe(ext_replace('.php'))
+        .pipe(rename(function (file) {
+            file.extname = ".php";
+        }))
         .pipe(gulp.dest(backend.tmp))
     )
-}
-exports.backendRename = backendRename
-
-// 2.3.3 -  Delete html files 
-function backendClean() {
-    return (
-        gulp
-        .src(backend.tmp + '/**/*.html')
-        .pipe(clean())
-    )
-}
-exports.backendClean = backendClean
-
-// 2.3.4 -  Copy files to workfolder and server
-function backendCopyToWork() {
-    return (
-        gulp
-        .src(backend.tmp + '/**/*.*')
-        .pipe(multi_dest([backend.src, backend.themeFolder]))
-    )
-}
-exports.backendCopyToWork = backendCopyToWork
-
-
-// 2.3.5 - Run all tasks in series 
-const wpCopy = gulp.series([backendCopyToTemp, backendRename, backendClean, backendCopyToWork, () => del(backend.tmp)]);
-gulp.task('wpCopy', wpCopy)
-
-
-// 2.4 - Delete WordPress files
-function wpClean() {
-    return (
-        del([backend.tmp, backend.server])
-    )
 };
-exports.wpClean = wpClean
 
-// 2.5 - browser_sync 
-function wpLive() {
-    return (
-        gulp
-        .src(backend.src + '**/*.*')
-        .pipe(gulp.dest(backend.themeFolder))
-        .pipe(browser_sync.stream())
-    )
-};
-exports.wpLive = wpLive
+// 4.4 - Install Backend
+gulp.task('backend:install', gulp.series(
+    'frontend:develop',
+    () => del(backend.tmp),
+    wpDownload,
+    wpUnzip,
+    () => del(backend.tmp),
+    () => copy(frontend.dist + '/**/*.*', backend.tmp),
+    backendRename,
+    () => del(backend.tmp + '**/*.html'),
+    () => copy(backend.tmp + '/**/*.*', backend.src),
+    () => copy(backend.tmp + '/**/*.*', backend.themeFolder),
+    () => del(backend.tmp)
+));
 
-// 2.6 - Start server
-function wpStart() {
-    browser_sync.init({
-        proxy: backend.proxy + '/' + backend.themeName + '/' + backend.server
-    });
-    wpWatch()
-};
-exports.wpStart = wpStart
-
-// 2.7 - Watch
-function wpWatch() {
-    gulp.watch(backend.src).on('change', wpLive);
-};
-exports.wpWatch = wpWatch
-
-// 2.8 - Build
-function wpBuild() {
-    return gulp
-        .src(backend.src + '**/*.*')
-        .pipe(gulp.dest(backend.dist + 'wp-content/themes/' + backend.themeName))
-};
-exports.wpBuild = wpBuild
-
-// 2.9 - Back-end commands 
-const wpInstall = gulp.series(wpClean, wpDownload, wpUnzip, () => del(backend.tmp), wpCopy)
-gulp.task('backend:install', wpInstall)
-gulp.task('backend:start', wpStart)
-gulp.task('backend:build', wpBuild)
+// 4.4 - Install Backend
+gulp.task('backend:develop', gulp.series(
+    () => del(backend.themeFolder),
+    () => copy(backend.src + '/**/*.*', backend.themeFolder),
+));
 
 
+// 4.5 - Start Backend
+gulp.task('backend:start', gulp.series(
+    'backend:develop',
+    () => liveServer(backend.base, backend.proxy)
+));
 
-//
-// ===================================================
-// 3. Global Taks
-// ===================================================
-//
+// 4.6 - Build Backend
+gulp.task('backend:build', gulp.series(
+    () => del(backend.dist),
+    () => copy(backend.themeFolder + '/**/*.*', backend.dist + 'wp-content/themes/' + backend.themeName)
+));
 
-// 3.1 - FTP Deploy
+
+// =============================================================
+// 5. FTP Deploy
+// =============================================================
+// 
 // Please fill info and rename credentials-sample.json
 // to credentials.json
 //
@@ -293,11 +362,5 @@ function ftpDeploy(param) {
         .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
         .pipe(conn.dest(credentials.remoteFolder));
 }
-gulp.task('frontend:deploy', gulp.series('frontend:build', function (cb) {
-    ftpDeploy(frontend.dist)
-    cb();
-}));
-gulp.task('backend:deploy', gulp.series('backend:build', function (cb) {
-    ftpDeploy(backend.dist)
-    cb();
-}));
+gulp.task('frontend:deploy', gulp.series('frontend:build', () => ftpDeploy(frontend.dist)));
+gulp.task('backend:deploy', gulp.series('backend:build', () => ftpDeploy(backend.dist)));
