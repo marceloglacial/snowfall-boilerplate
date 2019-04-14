@@ -257,12 +257,7 @@ const backend = new function () {
     this.proxy = 'http://localhost:8000';
 };
 
-// 4.2 - Clean
-// ------------------------------
-gulp.task('backend:clean', () => del(backend.root + '**/*'));
-
-
-// 4.3 - Rename index files to php
+// 4.2 - Rename index files to php
 // ------------------------------
 function backendRename() {
     let path = backend.src
@@ -276,7 +271,7 @@ function backendRename() {
     return del(path + '**/*.html')
 };
 
-// 4.4 - Backed development 
+// 4.3 - Backed development 
 // ------------------------------
 gulp.task('backend:install', gulp.series(
     () => copy(frontend.dist + '/**/*.*', backend.src),
@@ -289,38 +284,44 @@ gulp.task('backend:start', gulp.series(
     () => liveServer(backend.dist, backend.proxy),
 ));
 
+// 4.6 - Build Backend
+// ------------------------------
+gulp.task('backend:build', gulp.series(
+    () => copy(backend.src + '/**/*.*', backend.dist),
+));
+
 
 // =============================================================
 // 5. FTP Deploy
 // =============================================================
-// 
+//
 // Please fill info and rename credentials-sample.json
 // to credentials.json
 //
 // NOTE: 
 // Due sensitive information,
 // this file WILL NOT BE on version control.
-//
 
-// function ftpDeploy(param) {
-//     let credentials = require('./credentials.json');
-//     var conn = vinyl_ftp.create({
-//         host: credentials.host,
-//         user: credentials.user,
-//         password: credentials.password,
-//         parallel: credentials.parallel,
-//         log: credentials.log
-//     });
-//     console.log('Uploading ' + param + ' files ...');
-//     let globs = [
-//         param + '**/*.*',
-//     ];
-//     var options = {
-//         buffer: false
-//     }
-//     return gulp.src(globs, options)
-//         .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
-//         .pipe(conn.dest(credentials.remoteFolder));
-// }
-// gulp.task('frontend:deploy', gulp.series('frontend:build', () => ftpDeploy(frontend.dist)));
-// gulp.task('backend:deploy', gulp.series('backend:build', () => ftpDeploy(backend.dist)));
+
+function ftpDeploy(param) {
+    let credentials = require('./credentials.json');
+    var conn = vinyl_ftp.create({
+        host: credentials.host,
+        user: credentials.user,
+        password: credentials.password,
+        parallel: credentials.parallel,
+        log: credentials.log
+    });
+    console.log('Uploading ' + param + ' files ...');
+    let globs = [
+        param + '**/*.*',
+    ];
+    var options = {
+        buffer: false
+    }
+    return gulp.src(globs, options)
+        .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
+        .pipe(conn.dest(credentials.remoteFolder));
+}
+gulp.task('frontend:deploy', gulp.series('frontend:build', () => ftpDeploy(frontend.dist)));
+gulp.task('backend:deploy', gulp.series('backend:build', () => ftpDeploy(backend.dist)));
