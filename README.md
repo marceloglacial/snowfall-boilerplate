@@ -1,7 +1,7 @@
 # Snowfall Boilerplate
 
 End-to-end web project based on three stages:
-1. Design (<a href="https://www.sketchapp.com/">Sketch</a>)
+1. Design (<a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a>)
 2. Front-end (HTML5/CSS/JS/SASS)
 3. Back-end (<a href="https://wordpress.org/">WordPress</a>)
 
