@@ -22,8 +22,7 @@ Sketch template file with:
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
 ### Back-end
-- WordPress latest version download and unzip to workspace
-- PHP server proxy ready 
+- <a href="https://docs.docker.com/compose/wordpress/">WordPress Docker Compose</a> ready
 - Theme Starter template boilerplate
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
@@ -39,9 +38,7 @@ Sketch template file with:
 
 ## Installation
 
-1. Install Apache, MySQL and PHP to run WordPress (e.g.: [XAMPP](https://www.apachefriends.org/download.html), [MAMP](https://www.mamp.info/en/))
-2. Start servers
-3. Create a database for Wordpress
+1. <a haref="https://docs.docker.com/compose/install/">Install Docker Compose</a>
 4. [Install npm](https://www.npmjs.com/get-npm)
 5. [Install Gulp](https://gulpjs.com)
 6. Run installation on terminal: 
@@ -50,7 +47,7 @@ Sketch template file with:
     npm install 
 ```
 
-# How to Use (gulp tasks) 
+# How to Use
 
 ## Front-end
 
