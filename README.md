@@ -1,7 +1,7 @@
 # Snowfall Boilerplate
 
 End-to-end web project based on three stages:
-1. Design (<a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a>)
+1. Design (<a href="https://www.sketchapp.com/">Sketch</a> and/or <a href="https://www.figma.com/">Figma</a>)
 2. Front-end (HTML5/CSS/JS/SASS)
 3. Back-end (<a href="https://wordpress.org/">WordPress</a>)
 
@@ -12,7 +12,7 @@ End-to-end web project based on three stages:
 Sketch template file with:
  - Desktop, tablet and phone artboards
  - Default web icons, tiles and favicons 
- - WordPress screenshot artboards
+ - WordPress screenshot artboard
 
 ### Front-end
 - HTML5 starter template files
@@ -23,11 +23,10 @@ Sketch template file with:
 
 ### Back-end
 - <a href="https://docs.docker.com/compose/wordpress/">WordPress Docker Compose</a> ready
-- Theme Starter template boilerplate
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
 ### Automation
-- HTML minify on build
+- HTML minify on build (optional)
 - JS minify on build
 - Optmized Images on build
 - <a href="https://www.browsersync.io/">BrowserSync Live Reloading</a>
