@@ -11,8 +11,8 @@ const gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     htmlmin = require('gulp-htmlmin'),
     imagemin = require('gulp-imagemin'),
-    handlebars = require('gulp-compile-handlebars'),
-    rename = require('gulp-rename')
+    pug = require('gulp-pug'),
+    rename = require('gulp-rename'),
     sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
     uglify = require('gulp-uglify'),
@@ -89,17 +89,9 @@ function images(src, dest) {
 
 // 2.5 - Complie Handlebars templates
 // ------------------------------
-function templates(templates, partials, dest) {
-    var templateData = {},
-        options = {
-            ignorePartials: true,
-            batch: [partials]
-        }
+function templates(templates, dest) {
     return gulp.src(templates)
-        .pipe(handlebars(templateData, options))
-        .pipe(rename(function (path) {
-            path.extname = '.html';
-        }))
+        .pipe(pug())
         .pipe(gulp.dest(dest))
 };
 
@@ -166,8 +158,7 @@ const frontend = new function () {
     this.styles = this.src + 'styles/**/*.scss';
     this.scripts = this.src + 'scripts/**/*.js';
     this.images = this.src + 'images/' + folders;
-    this.templates = this.src + 'templates/*.hbs';
-    this.partials = this.src + 'templates/partials';
+    this.templates = this.src + 'templates/*.pug';
 };
 
 // 3.2 - Assets
@@ -192,7 +183,7 @@ gulp.task('frontend:images', () => images(frontend.images, frontend.dist + 'asse
 
 // 3.7 - Templates
 // ------------------------------
-gulp.task('frontend:templates', () => templates(frontend.templates, frontend.partials, frontend.dist));
+gulp.task('frontend:templates', () => templates(frontend.templates, frontend.dist));
 
 // 3.8 - HTML
 // ------------------------------
@@ -241,7 +232,6 @@ gulp.task('frontend:start', gulp.series('frontend:server'));
 // =============================================================
 // 4. Back-end
 // =============================================================
-//
 
 // 4.1 - Backend paths
 const backend = new function () {

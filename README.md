@@ -19,7 +19,7 @@ End-to-end web project based on three stages:
 - <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a> ready
 - <a href="https://sass-lang.com/">SASS</a> ready
 - <a href="https://sass-guidelin.es/#architecture">SASS Architecture</a> ready
-- <a href="https://handlebarsjs.com/">Handlebars</a> templates ready
+- <a href="https://pugjs.com/">PugJS</a> templates ready
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
 ### Back-end
