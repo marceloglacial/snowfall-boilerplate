@@ -9,7 +9,6 @@ const gulp = require('gulp'),
     browserSync = require('browser-sync'),
     del = require('del'),
     autoprefixer = require('gulp-autoprefixer'),
-    htmlmin = require('gulp-htmlmin'),
     imagemin = require('gulp-imagemin'),
     pug = require('gulp-pug'),
     rename = require('gulp-rename'),
@@ -95,23 +94,7 @@ function templates(templates, dest) {
         .pipe(gulp.dest(dest))
 };
 
-// 2.6 - HTML
-// ------------------------------
-function html(src, dest) {
-    return (
-        gulp
-        .src(src)
-        .pipe(htmlmin({
-            collapseWhitespace: true,
-            removeComments: true,
-            minifyCSS: true,
-            minifyJS: true
-        }))
-        .pipe(gulp.dest(dest))
-    )
-};
-
-// 2.7 - Copy
+// 2.6 - Copy
 // ------------------------------
 function copy(src, dest) {
     return gulp.src(src)
@@ -119,7 +102,7 @@ function copy(src, dest) {
 };
 
 
-// 2.8 - Start server
+// 2.7 - Start server
 // ------------------------------
 function liveServer(path, proxy) {
     let options = proxy ? {
@@ -135,7 +118,7 @@ function liveServer(path, proxy) {
 };
 
 
-// 2.9 - Reload page
+// 2.8 - Reload page
 // ------------------------------
 function liveReload() {
     browserSync.reload();
@@ -203,8 +186,7 @@ gulp.task('frontend:build',
         'frontend:styles',
         'frontend:scripts',
         'frontend:images',
-        'frontend:templates',
-        'frontend:html'
+        'frontend:templates'
     )
 );
 
