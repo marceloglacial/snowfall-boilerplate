@@ -9,7 +9,7 @@ End-to-end web project based on three stages:
 
 ### Design
 
-(<a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a>) templates with:
+ - <a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a> templates with:
  - Desktop, tablet and phone artboards
  - Default web icons, tiles and favicons 
  - WordPress screenshot artboard
