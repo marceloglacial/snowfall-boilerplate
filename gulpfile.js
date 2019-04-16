@@ -141,7 +141,7 @@ function liveServer(path, proxy) {
     };
     browserSync.init(options);
     gulp.watch(frontend.src).on('change', gulp.series('frontend:develop', liveReload));
-    gulp.watch(backend.src).on('change', gulp.series(liveReload));
+    gulp.watch(backend.src).on('change', gulp.series('backend:develop', liveReload));
 };
 
 
@@ -252,8 +252,8 @@ gulp.task('frontend:start', gulp.series('frontend:server'));
 // 4.1 - Backend paths
 const backend = new function () {
     this.root = 'back-end/';
-    this.src = this.root + 'src/' + projectConfig.name;
-    this.dist = this.root + 'dist/';
+    this.src = this.root + 'src/';
+    this.dist = this.root + 'dist/' + projectConfig.name;
     this.proxy = 'http://localhost:8000';
 };
 
@@ -271,24 +271,30 @@ function backendRename() {
     return del(path + '**/*.html')
 };
 
-// 4.3 - Backed development 
+// 4.3 - Backed Install 
 // ------------------------------
 gulp.task('backend:install', gulp.series(
     () => copy(frontend.dist + '/**/*.*', backend.src),
-    backendRename
+    backendRename,
+    () => copy(backend.src + '/**/*.*', backend.dist),
 ));
 
 // 4.5 - Start Backend
 // ------------------------------
 gulp.task('backend:start', gulp.series(
+    'backend:install',
     () => liveServer(backend.dist, backend.proxy),
 ));
 
-// 4.6 - Build Backend
+// 4.6 - Start Develop
 // ------------------------------
-gulp.task('backend:build', gulp.series(
+gulp.task('backend:develop', gulp.series(
     () => copy(backend.src + '/**/*.*', backend.dist),
 ));
+
+// 4.7 - Clean build files
+// ------------------------------
+gulp.task('backend:clean', () => clean(backend.dist));
 
 
 // =============================================================
@@ -324,4 +330,4 @@ function ftpDeploy(param) {
         .pipe(conn.dest(credentials.remoteFolder));
 }
 gulp.task('frontend:deploy', gulp.series('frontend:build', () => ftpDeploy(frontend.dist)));
-gulp.task('backend:deploy', gulp.series('backend:build', () => ftpDeploy(backend.dist)));
+gulp.task('backend:deploy', gulp.series(() => ftpDeploy(backend.dist)));

@@ -25,6 +25,6 @@ services:
        WORDPRESS_DB_PASSWORD: wordpress
        WORDPRESS_DB_NAME: wordpress
      volumes:
-       - ./back-end/src:/var/www/html/wp-content/themes
+       - ./back-end/dist:/var/www/html/wp-content/themes
 volumes:
     db_data: {}
