@@ -9,13 +9,11 @@ const gulp = require('gulp'),
     browserSync = require('browser-sync'),
     del = require('del'),
     autoprefixer = require('gulp-autoprefixer'),
-    decompress = require('gulp-decompress'),
-    download = require('gulp-download'),
     htmlmin = require('gulp-htmlmin'),
     imagemin = require('gulp-imagemin'),
     handlebars = require('gulp-compile-handlebars'),
-    rename = require('gulp-rename');
-sass = require('gulp-sass'),
+    rename = require('gulp-rename')
+    sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
     uglify = require('gulp-uglify'),
     util = require('gulp-util'),
@@ -243,10 +241,6 @@ gulp.task('frontend:start', gulp.series('frontend:server'));
 // =============================================================
 // 4. Back-end
 // =============================================================
-//
-// First steps:
-// * Start PHP and MySQL servers 
-// * Create a WordPress database
 //
 
 // 4.1 - Backend paths
