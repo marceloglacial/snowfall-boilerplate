@@ -1,34 +1,33 @@
 # Snowfall Boilerplate
 
 End-to-end web project based on three stages:
-1. Design (<a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a>)
-2. Front-end (HTML5/CSS/JS/SASS)
-3. Back-end (<a href="https://wordpress.org/">WordPress</a>)
+1. Design 
+2. Front-end
+3. Back-end
 
 ## Features
 
 ### Design
 
-Sketch template file with:
+ - <a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a> templates
  - Desktop, tablet and phone artboards
  - Default web icons, tiles and favicons 
- - WordPress screenshot artboards
+ - WordPress screenshot artboard
 
 ### Front-end
 - HTML5 starter template files
 - <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a> ready
 - <a href="https://sass-lang.com/">SASS</a> ready
 - <a href="https://sass-guidelin.es/#architecture">SASS Architecture</a> ready
+- <a href="https://pugjs.com/">PugJS</a> templates ready
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
 ### Back-end
-- WordPress latest version download and unzip to workspace
-- PHP server proxy ready 
-- Theme Starter template boilerplate
+- <a href="https://docs.docker.com/compose/wordpress/">WordPress Docker Compose</a> ready
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
 ### Automation
-- HTML minify on build
+- HTML minify on build (optional)
 - JS minify on build
 - Optmized Images on build
 - <a href="https://www.browsersync.io/">BrowserSync Live Reloading</a>
@@ -39,9 +38,7 @@ Sketch template file with:
 
 ## Installation
 
-1. Install Apache, MySQL and PHP to run WordPress (e.g.: [XAMPP](https://www.apachefriends.org/download.html), [MAMP](https://www.mamp.info/en/))
-2. Start servers
-3. Create a database for Wordpress
+1. <a href="https://docs.docker.com/compose/install/">Install Docker Compose</a>
 4. [Install npm](https://www.npmjs.com/get-npm)
 5. [Install Gulp](https://gulpjs.com)
 6. Run installation on terminal: 
@@ -50,11 +47,11 @@ Sketch template file with:
     npm install 
 ```
 
-# How to Use (gulp tasks) 
+# How to Use
 
 ## Front-end
 
-- `npm run front` - Start developement
+- `npm run frontend` - Start developement
 
 ### Gulp tasks
 - `frontend:start` - Starts Browser Live reloading and watch SASS files.
