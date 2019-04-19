@@ -84,3 +84,4 @@ Due sensitive information, `credentials.json` WILL NOT BE on version control.
 - Back-end based on <a href="https://github.com/marceloglacial/iceberg-boilerplate">Iceberg boilerplate</a>
 - SASS Structure based on <a href="https://github.com/HugoGiraudel/sass-boilerplate">7-1 SASS Boilerplate</a> 
 - Grid system based on <a href="https://milligram.io/">Milligram SCSS</a> (<a href="https://www.npmjs.com/package/milligram-scss">SCSS version</a>)
+
