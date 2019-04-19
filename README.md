@@ -1,4 +1,5 @@
 # Snowfall Boilerplate
+[![Build Status](https://travis-ci.org/marceloglacial/snowfall-boilerplate.svg?branch=master)](https://travis-ci.org/marceloglacial/snowfall-boilerplate)
 
 End-to-end web project based on three stages:
 1. Design 
@@ -39,9 +40,9 @@ End-to-end web project based on three stages:
 ## Installation
 
 1. <a href="https://docs.docker.com/compose/install/">Install Docker Compose</a>
-4. [Install npm](https://www.npmjs.com/get-npm)
-5. [Install Gulp](https://gulpjs.com)
-6. Run installation on terminal: 
+2. [Install npm](https://www.npmjs.com/get-npm)
+3. [Install Gulp](https://gulpjs.com)
+4. Run installation on terminal: 
 
 ```terminal
     npm install 
