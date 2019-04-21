@@ -70,13 +70,37 @@ End-to-end web project based on three stages:
 
 ## Deploy
 
-Configure FTP deploy:
+### FTP deploy:
 
 1. Fill FTP credentials and server info on `credentials-sample.json` 
 2. Rename `credentials-sample.json` to `credentials.json`
 
 <strong>NOTE:</strong>
 Due sensitive information, `credentials.json` WILL NOT BE on version control.
+
+### Travis CD
+1. Connect your GitHub repository to <a href="https://travis-ci.org/">Travis</a>
+2. Configure your deploy on `.travis.yml` file:
+
+<strong>Front-End deploy</strong>
+
+```yml
+script:
+- gulp frontend:build
+
+after_script:
+- gulp frontend:deploy
+```
+
+<strong>Back-End deploy</strong>
+
+```yml 
+script:
+- gulp backend:build
+
+after_script:
+- gulp backend:deploy
+```
 
 
 # References
