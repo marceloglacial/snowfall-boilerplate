@@ -86,11 +86,13 @@ function images(src, dest) {
 };
 
 
-// 2.5 - Complie Handlebars templates
+// 2.5 - Complie templates
 // ------------------------------
 function templates(templates, dest) {
     return gulp.src(templates)
-        .pipe(pug())
+        .pipe(pug({
+            pretty: true // comment or remove to minify
+        }))
         .pipe(gulp.dest(dest))
 };
 
