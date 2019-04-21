@@ -13,7 +13,7 @@ End-to-end web project based on three stages:
  - <a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a> templates
  - Desktop, tablet and phone artboards
  - Default web icons, tiles and favicons 
- - WordPress screenshot artboard
+ - WordPress screenshot artboards
 
 ### Front-end
 - HTML5 starter template files
@@ -35,6 +35,7 @@ End-to-end web project based on three stages:
 
 ### CI/CD
 - <a href="#deploy">FTP Deploy</a> integrated
+- <a href="#deploy">Travis CI</a> ready
 
 
 ## Installation
@@ -80,7 +81,7 @@ Due sensitive information, `credentials.json` WILL NOT BE on version control.
 
 ### Travis CD
 1. Connect your GitHub repository to <a href="https://travis-ci.org/">Travis</a>
-2. Configure your deploy on `.travis.yml` file:
+2. Configure your deploy on `.travis.yml` file
 
 <strong>Front-End deploy</strong>
 
