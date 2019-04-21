@@ -13,7 +13,7 @@
   },
   "scripts": {
     "frontend": "gulp frontend:start",
-    "backend": "docker-compose up -d && sleep 10 && gulp backend:start",
+    "backend": "gulp backend:install && docker-compose up -d && sleep 10 && gulp backend:start",
     "stop": "docker-compose stop",
     "destroy": "docker-compose down --volumes"
   },

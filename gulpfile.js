@@ -88,10 +88,10 @@ function images(src, dest) {
 
 // 2.5 - Complie templates
 // ------------------------------
-function templates(templates, dest) {
+function templates(templates, dest, pretty) {
     return gulp.src(templates)
         .pipe(pug({
-            pretty: true // comment or remove to minify
+            pretty: pretty
         }))
         .pipe(gulp.dest(dest))
 };
@@ -202,7 +202,7 @@ gulp.task('frontend:develop',
         'frontend:styles',
         'frontend:scripts',
         () => copy(frontend.images, frontend.dist + 'assets/img/'),
-        'frontend:templates'
+        () => templates(frontend.templates, frontend.dist, true)
     )
 );
 
@@ -242,6 +242,7 @@ function backendRename() {
 // 4.3 - Backed Install 
 // ------------------------------
 gulp.task('backend:install', gulp.series(
+    'frontend:develop',
     () => copy(frontend.dist + '/**/*.*', backend.src),
     backendRename,
     () => copy(backend.src + '/**/*.*', backend.dist),
@@ -250,7 +251,6 @@ gulp.task('backend:install', gulp.series(
 // 4.5 - Start Backend
 // ------------------------------
 gulp.task('backend:start', gulp.series(
-    'backend:install',
     () => liveServer(backend.dist, backend.proxy),
 ));
 
@@ -277,7 +277,7 @@ gulp.task('backend:clean', () => clean(backend.dist));
 // this file WILL NOT BE on version control.
 
 
-function ftpDeploy(param) {
+function ftpDeploy(local, remote) {
     let credentials = require('./credentials.json');
     var conn = vinyl_ftp.create({
         host: credentials.host,
@@ -286,16 +286,17 @@ function ftpDeploy(param) {
         parallel: credentials.parallel,
         log: credentials.log
     });
-    console.log('Uploading ' + param + ' files ...');
+    console.log('Uploading ' + local + ' files ...');
     let globs = [
-        param + '**/*.*',
+        local + '**/*.*',
     ];
     var options = {
         buffer: false
     }
+    let remoteFolder = remote ? credentials.remoteFolder + remote : credentials.remoteFolder
     return gulp.src(globs, options)
-        .pipe(conn.newer(credentials.remoteFolder)) // only upload newer files
-        .pipe(conn.dest(credentials.remoteFolder));
+        .pipe(conn.newer(remoteFolder)) // only upload newer files
+        .pipe(conn.dest(remoteFolder));
 }
 gulp.task('frontend:deploy', gulp.series('frontend:build', () => ftpDeploy(frontend.dist)));
-gulp.task('backend:deploy', gulp.series(() => ftpDeploy(backend.dist)));
+gulp.task('backend:deploy', gulp.series(() => ftpDeploy(backend.dist, '/wp-content/themes')));
