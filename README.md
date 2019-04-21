@@ -56,9 +56,9 @@ End-to-end web project based on three stages:
 - `npm run frontend` - Start developement
 
 ### Gulp tasks
-- `frontend:start` - Starts Browser Live reloading and watch SASS files.
+- `frontend:start` - Start Browser Live reloading and watch SASS files.
 - `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
-- `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server (default).
+- `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server.
 
 ## Back-end
 
@@ -66,12 +66,12 @@ End-to-end web project based on three stages:
 
 ### Gulp tasks
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
-- `backend:start` -  Starts Browser Live reloading and watch SASS files.
-- `backend:deploy` -  Build theme and upload all `back-end/src` files to FTP server (default).
+- `backend:start` -  Start Browser Live reloading and watch SASS files.
+- `backend:deploy` -  Build theme and upload all `back-end/src` files to FTP server.
 
 ## Deploy
 
-### FTP deploy:
+#### FTP config
 
 1. Fill FTP credentials and server info on `credentials-sample.json` 
 2. Rename `credentials-sample.json` to `credentials.json`
@@ -79,7 +79,7 @@ End-to-end web project based on three stages:
 <strong>NOTE:</strong>
 Due sensitive information, `credentials.json` WILL NOT BE on version control.
 
-### Travis CD
+#### Travis CD
 1. Connect your GitHub repository to <a href="https://travis-ci.org/">Travis</a>
 2. Configure your deploy on `.travis.yml` file
 
