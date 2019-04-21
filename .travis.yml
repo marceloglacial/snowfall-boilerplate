@@ -2,6 +2,10 @@ language: node_js
 node_js:
 - node
 
+branches:
+  only:
+  - master
+
 before_script:
 - npm install -g --silent
 
