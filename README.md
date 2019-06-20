@@ -1,5 +1,5 @@
 # Snowfall Boilerplate
-[//]: <> [![Build Status](https://travis-ci.org/marceloglacial/snowfall-boilerplate.svg?branch=master)](https://travis-ci.org/marceloglacial/snowfall-boilerplate)
+[![Build Status](https://travis-ci.org/marceloglacial/snowfall-boilerplate.svg?branch=master)](https://travis-ci.org/marceloglacial/snowfall-boilerplate)
 
 End-to-end web project based on three stages:
 1. Design 
