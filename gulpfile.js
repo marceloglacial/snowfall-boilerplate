@@ -10,6 +10,7 @@ const gulp = require('gulp'),
   autoprefixer = require('gulp-autoprefixer'),
   imagemin = require('gulp-imagemin'),
   handlebars = require('gulp-compile-handlebars'),
+  rename = require('gulp-rename'),
   sass = require('gulp-sass'),
   sourcemaps = require('gulp-sourcemaps'),
   babel = require('gulp-babel'),
@@ -126,17 +127,23 @@ function copy(src, dest) {
 
 // 2.7 - Start server
 // ------------------------------
-function liveServer(path) {
-  let options = {
-    server: {
-      baseDir: frontend.dist,
-    },
-  };
+function liveServer(path, proxy) {
+  let options = proxy
+    ? {
+        proxy: backend.proxy,
+      }
+    : {
+        server: {
+          baseDir: path,
+        },
+      };
+  browserSync.init(options);
   gulp
     .watch(frontend.src)
     .on('change', gulp.series('frontend:develop', liveReload));
-
-  browserSync.init(options);
+  gulp
+    .watch(backend.src)
+    .on('change', gulp.series('backend:develop', liveReload));
 }
 
 // 2.8 - Reload page
@@ -246,9 +253,10 @@ gulp.task(
 // 3.11 - Start Server
 // ------------------------------
 gulp.task(
-  'frontend:start',
-  gulp.series('frontend:develop', () => liveServer('frontend'))
+  'frontend:server',
+  gulp.series('frontend:develop', () => liveServer(frontend.dist))
 );
+gulp.task('frontend:start', gulp.series('frontend:server'));
 
 // =============================================================
 // 4. Back-end
