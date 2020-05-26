@@ -73,7 +73,7 @@ Run npm audit if you got too many dependencies vulnerabilities
 
 ## Back-end
 
-- `npm run backend` - Start developement
+- `npm run backend` - Start developement (make sure Docker is running)
 
 ### Gulp tasks
 
