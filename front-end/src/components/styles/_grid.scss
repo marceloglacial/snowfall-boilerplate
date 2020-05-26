@@ -1,0 +1,17 @@
+.container {
+  margin: 0 auto;
+  padding: 0 1rem;
+  max-width: map_get($breakpoints, 'extra-large');
+
+  @include mq('large', 'max') {
+    max-width: map_get($breakpoints, 'large');
+  }
+
+  @include mq('medium', 'max') {
+    max-width: map_get($breakpoints, 'medium');
+  }
+
+  @include mq('small', 'max') {
+    max-width: map_get($breakpoints, 'small');
+  }
+}

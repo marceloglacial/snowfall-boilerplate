@@ -17,16 +17,27 @@
     "stop": "docker-compose stop",
     "destroy": "docker-compose down --volumes"
   },
+  "browserslist": [
+    "last 3 versions"
+  ],
   "homepage": "https://github.com/marceloglacial/snowfall-boilerplate#readme",
   "devDependencies": {
+    "@babel/core": "^7.10.0",
+    "@babel/preset-env": "^7.10.0",
     "autoprefixer": "^9.8.0",
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.3",
     "browser-sync": "^2.26.7",
     "del": "^4.1.1",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
+    "gulp-babel": "^8.0.0",
     "gulp-compile-handlebars": "^0.6.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-htmlmin": "^5.0.1",
     "gulp-imagemin": "^5.0.3",
     "gulp-pug": "^4.0.1",
+    "gulp-purgecss": "^2.2.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5",

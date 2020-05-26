@@ -4,23 +4,19 @@
 
 // 1.1 - Gulp Packages
 // ------------------------------
-const projectConfig = require('./package.json');
 const gulp = require('gulp'),
-  autoprefixer = require('gulp-autoprefixer'),
   browserSync = require('browser-sync'),
   del = require('del'),
+  autoprefixer = require('gulp-autoprefixer'),
   imagemin = require('gulp-imagemin'),
-  rename = require('gulp-rename'),
+  handlebars = require('gulp-compile-handlebars'),
   sass = require('gulp-sass'),
   sourcemaps = require('gulp-sourcemaps'),
+  babel = require('gulp-babel'),
   uglify = require('gulp-uglify'),
-  vinyl_ftp = require('vinyl-ftp'),
-  pug = require('gulp-pug');
-
-// 1.2 - Global Paths
-// ------------------------------
-const all = '**/*.*',
-  folders = '**/*';
+  purgecss = require('gulp-purgecss'),
+  concat = require('gulp-concat'),
+  htmlmin = require('gulp-htmlmin');
 
 // ==============================================================
 // 2. Functions
@@ -34,56 +30,92 @@ function clean(path) {
 
 // 2.2 - Complie SASS
 // ------------------------------
-function styles(src, dest) {
+function styles(src, dest, minify) {
+  if (minify) {
+    let options = {
+      outputStyle: 'compressed',
+    };
+    return gulp
+      .src(src + '**/*.scss')
+      .pipe(sourcemaps.init())
+      .pipe(sass(options))
+      .on('error', sass.logError)
+      .pipe(autoprefixer())
+      .pipe(concat('main.min.css'))
+      .pipe(gulp.dest(dest + 'css/'));
+  } else {
+    return gulp
+      .src(src + '**/*.scss')
+      .pipe(sourcemaps.init())
+      .pipe(sass())
+      .on('error', sass.logError)
+      .pipe(autoprefixer())
+      .pipe(concat('main.min.css'))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(dest + 'css/'));
+  }
+}
+
+function purge(dest) {
   return gulp
-    .src(src)
-    .pipe(sourcemaps.init())
+    .src(dest + 'css/**/*.css')
     .pipe(
-      sass({
-        outputStyle: 'compressed',
+      purgecss({
+        content: [dest + '**/*.html'],
       })
     )
-    .on('error', sass.logError)
-    .pipe(
-      autoprefixer({
-        browsers: ['last 3 versions'],
-      })
-    )
-    .pipe(sourcemaps.write('./maps'))
-    .pipe(
-      rename({
-        suffix: '.min',
-      })
-    )
-    .pipe(gulp.dest(dest));
+    .pipe(gulp.dest(dest + 'css/'));
 }
 
 // 2.3 - Minimize Scripts
 // ------------------------------
 function scripts(src, dist) {
   return gulp
-    .src(src, {
+    .src(src + '**/*.js', {
       sourcemaps: true,
     })
-    .pipe(uglify())
     .pipe(
-      rename({
-        suffix: '.min',
+      babel({
+        presets: ['@babel/env'],
       })
     )
-    .pipe(gulp.dest(dist));
+    .pipe(uglify())
+    .pipe(concat('main.min.js'))
+    .pipe(gulp.dest(dist + 'js/'));
 }
 
 // 2.4 - Optmize images
 // ------------------------------
 function images(src, dest) {
-  return gulp.src(src).pipe(imagemin()).pipe(gulp.dest(dest));
+  return gulp
+    .src(src + folders)
+    .pipe(
+      imagemin({
+        interlaced: true,
+        progressive: true,
+        optimizationLevel: 5,
+        svgoPlugins: [
+          {
+            removeViewBox: true,
+          },
+        ],
+      })
+    )
+    .pipe(gulp.dest(dest));
 }
 
-// 2.5 - Complie Handlebars templates
+// 2.5 - Complie templates
 // ------------------------------
-function templates(templates, dest) {
-  return gulp.src(templates).pipe(pug()).pipe(gulp.dest(dest));
+function templates(templates, partials, dest) {
+  var templateData = {},
+    options = {
+      ignorePartials: true,
+      batch: [partials],
+    };
+  return gulp
+    .src(templates + '*.html')
+    .pipe(handlebars(templateData, options))
+    .pipe(gulp.dest(dest));
 }
 
 // 2.6 - Copy
@@ -94,23 +126,17 @@ function copy(src, dest) {
 
 // 2.7 - Start server
 // ------------------------------
-function liveServer(path, proxy) {
-  let options = proxy
-    ? {
-        proxy: backend.proxy,
-      }
-    : {
-        server: {
-          baseDir: path,
-        },
-      };
-  browserSync.init(options);
+function liveServer(path) {
+  let options = {
+    server: {
+      baseDir: frontend.dist,
+    },
+  };
   gulp
     .watch(frontend.src)
     .on('change', gulp.series('frontend:develop', liveReload));
-  gulp
-    .watch(backend.src)
-    .on('change', gulp.series('backend:develop', liveReload));
+
+  browserSync.init(options);
 }
 
 // 2.8 - Reload page
@@ -119,68 +145,87 @@ function liveReload() {
   browserSync.reload();
 }
 
+// 2.9 - Minify Html
+// ------------------------------
+function html(src, dest) {
+  return gulp
+    .src([src + '**/*.html'])
+    .pipe(
+      htmlmin({
+        collapseWhitespace: true,
+        removeComments: true,
+      })
+    )
+    .pipe(gulp.dest(dest));
+}
+
 // =============================================================
 // 3. Front-end
 // =============================================================
 
 // 3.1 - Paths
 // ------------------------------
+const all = '**/*.*',
+  folders = '**/*';
+
 const frontend = new (function () {
   this.root = 'front-end/';
   this.all = this.root + all;
   this.src = this.root + 'src/';
   this.dist = this.root + 'dist/';
   this.assets = this.src + 'assets/' + folders;
-  this.vendors = this.src + 'vendors/' + folders;
-  this.styles = this.src + 'styles/**/*.scss';
-  this.scripts = this.src + 'scripts/**/*.js';
-  this.images = this.src + 'images/' + folders;
-  this.templates = this.src + 'templates/*.pug';
+  this.components = this.src + 'components/';
 })();
 
-// 3.2 - Assets
+// 3.2 - Templates
+// ------------------------------
+gulp.task('frontend:templates', () =>
+  templates(frontend.src, frontend.components, frontend.dist)
+);
+
+// 3.3 - Assets
 // ------------------------------
 gulp.task('frontend:assets', () => copy(frontend.assets, frontend.dist));
 
-// 3.3 - Vendors
-// ------------------------------
-gulp.task('frontend:vendors', () =>
-  copy(frontend.vendors, frontend.dist + 'assets/')
-);
-
 // 3.4 - Styles
 // ------------------------------
-gulp.task('frontend:styles', () =>
-  styles(frontend.styles, frontend.dist + 'assets/css/')
+gulp.task('frontend:styles', () => styles(frontend.components, frontend.dist));
+gulp.task('frontend:styles-build', () =>
+  styles(frontend.components, frontend.dist, 'minify')
 );
+gulp.task('frontend:purgecss', () => purge(frontend.dist));
 
 // 3.5 - Scripts
 // ------------------------------
 gulp.task('frontend:scripts', () =>
-  scripts(frontend.scripts, frontend.dist + '/assets/js/')
+  scripts(frontend.components, frontend.dist)
 );
 
 // 3.6 - Images
 // ------------------------------
-gulp.task('frontend:images', () =>
-  images(frontend.images, frontend.dist + 'assets/img/')
-);
+gulp.task('frontend:images', () => images(frontend.dist, frontend.dist));
 
-// 3.7 - Templates
+// 3.7 - HTML
 // ------------------------------
-gulp.task('frontend:templates', () =>
-  templates(frontend.templates, frontend.dist)
-);
+gulp.task('frontend:html', () => html(frontend.dist, frontend.dist));
 
-// 3.8 - HTML
-// ------------------------------
-gulp.task('frontend:html', () =>
-  html(frontend.dist + '/**/*.html', frontend.dist)
-);
-
-// 3.9 - Clean build files
+// 3.8 - Clean build files
 // ------------------------------
 gulp.task('frontend:clean', () => clean(frontend.dist));
+
+// 3.9 - Develop
+// ------------------------------
+gulp.task(
+  'frontend:develop',
+  gulp.series(
+    'frontend:clean',
+    'frontend:assets',
+    'frontend:styles',
+    'frontend:scripts',
+    'frontend:templates'
+    // 'frontend:purgecss',
+  )
+);
 
 // 3.10 - Build
 // ------------------------------
@@ -189,42 +234,28 @@ gulp.task(
   gulp.series(
     'frontend:clean',
     'frontend:assets',
-    'frontend:vendors',
-    'frontend:styles',
+    'frontend:styles-build',
     'frontend:scripts',
-    'frontend:images',
-    'frontend:templates'
+    'frontend:templates',
+    // 'frontend:purgecss',
+    'frontend:html',
+    'frontend:images'
   )
 );
 
-// 3.11 - Develop
+// 3.11 - Start Server
 // ------------------------------
 gulp.task(
-  'frontend:develop',
-  gulp.series(
-    'frontend:clean',
-    'frontend:assets',
-    'frontend:vendors',
-    'frontend:styles',
-    'frontend:scripts',
-    () => copy(frontend.images, frontend.dist + 'assets/img/'),
-    'frontend:templates'
-  )
+  'frontend:start',
+  gulp.series('frontend:develop', () => liveServer('frontend'))
 );
-
-// 3.12 - Start Server
-// ------------------------------
-gulp.task(
-  'frontend:server',
-  gulp.series('frontend:develop', () => liveServer(frontend.dist))
-);
-gulp.task('frontend:start', gulp.series('frontend:server'));
 
 // =============================================================
 // 4. Back-end
 // =============================================================
 
 // 4.1 - Backend paths
+const projectConfig = require('./package.json');
 const backend = new (function () {
   this.root = 'back-end/';
   this.src = this.root + 'src/';
