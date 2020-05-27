@@ -295,9 +295,7 @@ function backendRename() {
 gulp.task(
   'backend:install',
   gulp.series(
-    () => copy(frontend.dist + '/css/*.*', backend.src + '/assets/css'),
-    () => copy(frontend.dist + '/js/*.*', backend.src + '/assets/js'),
-    () => copy(frontend.dist + '/images/*.*', backend.src + '/assets/images'),
+    () => copy(frontend.dist + '/**/*.*', backend.src),
     () => copy(backend.src + '/**/*.*', backend.dist)
   )
 );
