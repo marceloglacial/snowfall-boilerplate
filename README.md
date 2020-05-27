@@ -19,10 +19,10 @@ End-to-end web project based on three stages:
 
 - HTML5 starter template files
 - <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a> ready
-- <a href="https://sass-lang.com/">SASS</a> ready
-- <a href="https://sass-guidelin.es/#architecture">SASS Architecture</a> ready
-- <a href="https://pugjs.com/">PugJS</a> templates ready
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
+- <a href="https://sass-lang.com/">SASS</a> ready
+- <a href="https://eduardoboucas.github.io/include-media/">Include-media</a> maintainable media queries in Sass
+- <a href='https://github.com/necolas/normalize.css/'>Normalize CSS</a> to CSS resets
 
 ### Back-end
 
@@ -95,5 +95,3 @@ Due sensitive information, `credentials.json` WILL NOT BE on version control.
 
 - Front-end based on <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake Boilerplate</a>
 - Back-end based on <a href="https://github.com/marceloglacial/iceberg-boilerplate">Iceberg boilerplate</a>
-- SASS Structure based on <a href="https://github.com/HugoGiraudel/sass-boilerplate">7-1 SASS Boilerplate</a>
-- Grid system based on <a href="https://milligram.io/">Milligram SCSS</a> (<a href="https://www.npmjs.com/package/milligram-scss">SCSS version</a>)
