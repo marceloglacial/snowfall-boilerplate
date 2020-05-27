@@ -55,7 +55,7 @@
 </head>
 
 <body>
-    <div id="wrapper" class="container-fluid">
+    <div id="wrapper" class="container">
         <header>
             <h1><?php bloginfo('name'); ?></h1>
         </header>
