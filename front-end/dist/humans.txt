@@ -2,7 +2,7 @@
 # The humans responsible & technology colophon
 
 /* TEAM */
-	Chef:Marcelo Glacial
+	Chef:Marcelo Glacial Freitas
 	Contact: glacial [at] gmail.com
 	URL: marceloglacial.com
 
@@ -11,5 +11,3 @@
 
 	Language: English / Portuguese
 	Doctype:HTML5
-	IDE: VS Code, Sketch
-	Tools: Bootstrap 3, AnimateCSS, Wow JS
