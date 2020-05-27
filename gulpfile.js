@@ -252,6 +252,8 @@ gulp.task(
 
 // 3.11 - Start Server
 // ------------------------------
+// 3.12 - Start Server
+// ------------------------------
 gulp.task(
   'frontend:server',
   gulp.series('frontend:develop', () => liveServer(frontend.dist))
@@ -293,8 +295,9 @@ function backendRename() {
 gulp.task(
   'backend:install',
   gulp.series(
-    () => copy(frontend.dist + '/**/*.*', backend.src),
-    backendRename,
+    () => copy(frontend.dist + '/css/*.*', backend.src + '/assets/css'),
+    () => copy(frontend.dist + '/js/*.*', backend.src + '/assets/js'),
+    () => copy(frontend.dist + '/images/*.*', backend.src + '/assets/images'),
     () => copy(backend.src + '/**/*.*', backend.dist)
   )
 );
