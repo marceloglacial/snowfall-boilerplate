@@ -49,7 +49,7 @@
     <meta property="og:locale" content="en_US">
 
     <!-- STYLES -->
-    <link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/css/styles.css?v=1.0.1">
+    <link rel="stylesheet preload prefetch" href="<?php bloginfo('template_url'); ?>/css/main.min.css?v=1.0.1" as='style'>
 
     <?php wp_head(); ?> 
 </head>
