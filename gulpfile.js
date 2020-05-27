@@ -296,7 +296,8 @@ gulp.task(
   'backend:install',
   gulp.series(
     () => copy(frontend.dist + '/**/*.*', backend.src),
-    () => copy(backend.src + '/**/*.*', backend.dist)
+    () => copy(backend.src + '/**/*.*', backend.dist),
+    () => del(backend.src + '/**/*.html')
   )
 );
 
