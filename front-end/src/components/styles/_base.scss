@@ -1,21 +1,10 @@
 // Base Structure
 // ------------------------------------------------
-body {
-  background: var(--white);
-  font-family: var(--font-primary);
-  color: var(--color-primary);
-}
 
-.container {
-  margin: 0 auto;
-  padding: 0 var(--spacing);
+a {
+  color: var(--blue);
 
-  @include media('>phone') {
-    max-width: var(--desktophd);
-  }
-
-  &--full {
-    padding: 0 var(--spacing);
-    max-width: unset;
+  &:hover {
+    color: var(--red);
   }
 }

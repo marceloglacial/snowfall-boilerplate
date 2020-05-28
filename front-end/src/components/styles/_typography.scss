@@ -1,3 +1,9 @@
+body {
+  font-family: var(--font-primary);
+  font-size: var(--paragraph);
+  color: var(--color-primary);
+}
+
 h1 {
   font-size: var(--heading-1);
   margin: var(--spacing) 0;

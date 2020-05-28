@@ -1,0 +1,27 @@
+.container {
+  margin: 0 auto;
+  padding: 0 var(--spacing);
+
+  @include media('>phone') {
+    max-width: var(--desktophd);
+  }
+
+  &--full {
+    padding: 0 var(--spacing);
+    max-width: unset;
+  }
+}
+.row {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+
+  @include media('>tablet') {
+    flex-wrap: nowrap;
+  }
+
+  .col {
+    flex-grow: 1;
+    width: 100%;
+  }
+}
