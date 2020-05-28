@@ -1,0 +1,20 @@
+@import '../../../../node_modules/include-media/dist/include-media';
+
+:root {
+  // Breakpoints
+  --phone: 320px;
+  --tablet: 768px;
+  --desktop: 1024px;
+  --desktophd: 1200px;
+  --fullhd: 1920px;
+  --full4k: 3840px;
+}
+
+$breakpoints: (
+  'phone': 320px,
+  'tablet': 768px,
+  'desktop': 1024px,
+  'desktophd': 1200px,
+  'fullhd': 1920px,
+  'full4k': 3840px,
+);
