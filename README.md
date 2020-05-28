@@ -71,7 +71,7 @@ Run npm audit if you got too many dependencies vulnerabilities
 
 - `frontend:start` - Starts Browser Live reloading and watch SASS files.
 - `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
-- `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server (default).
+- `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server.
 
 ## Back-end
 
@@ -85,7 +85,7 @@ Run npm audit if you got too many dependencies vulnerabilities
 
 ## Deploy
 
-Configure FTP deploy:
+#### FTP config
 
 1. Fill FTP credentials and server info on `credentials-sample.json`
 2. Rename `credentials-sample.json` to `credentials.json`
