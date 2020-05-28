@@ -1,3 +1,11 @@
+[![Build Status](https://travis-ci.org/marceloglacial/snowfall-boilerplate.svg?branch=master)](https://travis-ci.org/marceloglacial/snowfall-boilerplate) 
+![GitHub deployments](https://img.shields.io/github/deployments/marceloglacial/snowfall-boilerplate/github-pages) 
+[![GitHub forks](https://img.shields.io/github/forks/marceloglacial/snowfall-boilerplate)](https://github.com/marceloglacial/snowfall-boilerplate/network)
+[![GitHub stars](https://img.shields.io/github/stars/marceloglacial/snowfall-boilerplate)](https://github.com/marceloglacial/snowfall-boilerplate/stargazers) 
+![GitHub repo size](https://img.shields.io/github/repo-size/marceloglacial/snowfall-boilerplate)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/marceloglacial/snowfall-boilerplate)
+
+
 # Snowfall Boilerplate
 
 End-to-end web project based on three stages:
