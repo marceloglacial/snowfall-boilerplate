@@ -1,0 +1,56 @@
+// Variables
+// ------------------------------------------------
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap');
+:root {
+  // Colors
+  --white: #ffffff;
+  --black: #000000;
+  --blue: #0000ff;
+  --red: #ff0000;
+  --color-primary: var(--black);
+  --color-accent: var(--red);
+
+  // Spaces
+  --spacing: 1rem;
+  --spacing-double: 2rem;
+  --spacing-half: 0.5rem;
+
+  // Fonts
+  --font-primary: 'Open Sans', sans-serif;
+
+  // Sizes
+  --size-12: 0.75rem;
+  --size-16: 1rem;
+  --size-20: 1.25rem;
+  --size-24: 1.5rem;
+  --size-28: 1.75rem;
+  --size-32: 2rem;
+  --size-36: 2.25rem;
+  --size-40: 2.5rem;
+  --size-44: 2.75rem;
+  --size-48: 3rem;
+  --size-64: 4rem;
+
+  // Typography
+  --heading-1: var(--size-32);
+  --heading-2: var(--size-24);
+  --heading-3: var(--size-20);
+  --heading-4: var(--size-16);
+  --heading-5: var(--size-14);
+  --heading-6: var(--size-12);
+  --paragraph: var(--size-16);
+
+  @include media('>tablet') {
+    --heading-1: var(--size-48);
+    --heading-2: var(--size-32);
+    --heading-3: var(--size-24);
+    --heading-4: var(--size-20);
+    --heading-5: var(--size-16);
+    --heading-6: var(--size-12);
+    --paragraph: var(--size-16);
+  }
+
+  // Transition
+  --transition: all 0.25s ease-in-out;
+}
