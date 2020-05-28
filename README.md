@@ -24,6 +24,7 @@ End-to-end web project based on three stages:
 - <a href="https://eduardoboucas.github.io/include-media/">Include-media</a> maintainable media queries in Sass
 - <a href="https://handlebarsjs.com/">HandlebarsJS</a> for templating and code spliting
 - <a href='https://github.com/necolas/normalize.css/'>Normalize CSS</a> to CSS resets
+- Basic Grid System
 
 ### Back-end
 
