@@ -10,45 +10,37 @@
 
 End-to-end web project based on three stages:
 
-1. Design
-2. Front-end
-3. Back-end
+1. <a href="#design">Design</a>
+2. <a href="#front-end">Front-end</a>
+3. <a href="#back-end">Back-end</a>
 
-## Features
-
-### Design
+## Design
 
 - <a href="https://www.sketchapp.com/">Sketch</a> and <a href="https://www.figma.com/">Figma</a> templates
 - Desktop, tablet and phone artboards
 - Default web icons, tiles and favicons
 - WordPress screenshot artboard
 
-### Front-end
+## Front-end
 
 - HTML5 starter template files
-- <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a> ready
+- <a href="https://github.com/thedaviddias/Front-End-Checklist">Front-end checklist</a>
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
-- <a href="https://sass-lang.com/">SASS</a> ready
-- <a href="https://eduardoboucas.github.io/include-media/">Include-media</a> maintainable media queries in Sass
-- <a href="https://handlebarsjs.com/">HandlebarsJS</a> for templating and code spliting
-- <a href='https://github.com/necolas/normalize.css/'>Normalize CSS</a> to CSS resets
-- Basic Grid System
+- <a href="https://sass-lang.com/">SASS</a>
+- <a href="https://eduardoboucas.github.io/include-media/">Include-media</a> 
+- <a href="https://handlebarsjs.com/">HandlebarsJS</a>
+- <a href='https://github.com/necolas/normalize.css/'>Normalize CSS</a>
 
-### Back-end
+## Back-end
 
-- <a href="https://docs.docker.com/compose/wordpress/">WordPress Docker Compose</a> ready
+- <a href="https://wordpress.org/">WordPress</a>
+- <a href="https://docs.docker.com/compose/wordpress/">Docker Compose</a>
 - <a href="https://www.browsersync.io/">Browser Live Reloading</a>
 
-### Automation
+## CI/CD
 
-- HTML minify on build (optional)
-- JS minify on build
-- Optmized Images on build
-- <a href="https://www.browsersync.io/">BrowserSync Live Reloading</a>
-
-### CI/CD
-
-- <a href="#deploy">FTP Deploy</a> integrated
+- <a href="#deploy">FTP Deploy</a>
+- <a href="https://travis-ci.org/github/marceloglacial/snowfall-boilerplate/">Travis CI</a>
 
 ## Installation
 
@@ -61,9 +53,7 @@ End-to-end web project based on three stages:
     npm install
 ```
 
-### Attention
-
-Run npm audit if you got too many dependencies vulnerabilities
+<strong>Note:</strong> Run npm audit if you got dependencies vulnerabilities
 
 ```terminal
     npm audit fix -force
@@ -71,22 +61,17 @@ Run npm audit if you got too many dependencies vulnerabilities
 
 # How to Use
 
-## Front-end
+### Front-end
 
 - `npm run frontend` - Start developement
-
-### Gulp tasks
-
+- `npm run frontend-build` - Build
 - `frontend:start` - Starts Browser Live reloading and watch SASS files.
 - `frontend:build` - Minify HTML/CSS/JS, Optimize images and copy do dist folder.
 - `frontend:deploy` - Build and upload all `front-end/dist` files to FTP server.
 
-## Back-end
+### Back-end
 
 - `npm run backend` - Start developement (make sure Docker is running)
-
-### Gulp tasks
-
 - `backend:install` - Download WordPress latest version, unzip it and setup a server folder.
 - `backend:start` - Starts Browser Live reloading and watch SASS files.
 - `backend:deploy` - Build theme and upload all `back-end/src` files to FTP server (default).
@@ -98,10 +83,10 @@ Run npm audit if you got too many dependencies vulnerabilities
 1. Fill FTP credentials and server info on `credentials-sample.json`
 2. Rename `credentials-sample.json` to `credentials.json`
 
-<strong>NOTE:</strong>
+<strong>Note:</strong>
 Due sensitive information, `credentials.json` WILL NOT BE on version control.
 
-# References
+## References
 
 - Front-end based on <a href="https://github.com/marceloglacial/snowflake-boilerplate">Snowflake Boilerplate</a>
 - Back-end based on <a href="https://github.com/marceloglacial/iceberg-boilerplate">Iceberg boilerplate</a>
