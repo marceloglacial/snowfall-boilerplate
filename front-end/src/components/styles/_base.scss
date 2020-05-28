@@ -1,0 +1,10 @@
+// Base Structure
+// ------------------------------------------------
+
+a {
+  color: var(--blue);
+
+  &:hover {
+    color: var(--red);
+  }
+}
