@@ -15,7 +15,7 @@
     "frontend": "gulp frontend:start",
     "frontend-build": "gulp frontend:build",
     "frontend-deploy": "gulp frontend:deploy",
-    "backend": "echo 'Loading WordPres ... (please wait)' && open /Applications/Docker.app && sleep 20 && docker-compose up -d && sleep 10 && echo Running backend ... && gulp backend:start",
+    "backend": "echo 'Loading Docker ... (please wait)' && open /Applications/Docker.app && sleep 20 && docker-compose up -d && echo Running backend ... && sleep 10 && gulp backend:start",
     "backend-deploy": "gulp backend:deploy",
     "stop": "docker-compose stop",
     "destroy": "docker-compose down --volumes"
